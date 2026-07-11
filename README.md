@@ -94,4 +94,131 @@ Dan kamu masih punya banyak kesempatan.
 
 <div align="center">
 
+<img src="furina-divider.png" width="100%">
+
+</div>
+
+# ✨ 𝑷𝒓𝒐𝒋𝒆𝒄𝒕
+
+🌊 Beberapa project yang sedang kukembangkan.
+
+- WhatsApp Bot
+- Automation
+- AI Features
+- Utility Tools
+- Website
+- Canvas
+- Open Source
+
+---
+
+# 💙 𝑨 𝑳𝒊𝒕𝒕𝒍𝒆 𝑵𝒐𝒕𝒆
+
+> Jangan takut memulai.
+
+> Jangan malu belajar.
+
+> Jangan menyerah hanya karena prosesnya lama.
+
+Karena...
+
+Semua orang hebat juga pernah menjadi pemula.
+
+---
+
+<div align="center">
+
+<img src="logo.jpg" width="180">
+
+### 🌊 𝐈.𝐍.𝐓 𝐁𝐎𝐓
+
+Bot WhatsApp yang dibuat untuk membantu berbagai aktivitas dengan sistem yang terus dikembangkan.
+
+Bukan yang paling sempurna.
+
+Tapi selalu berusaha menjadi lebih baik.
+
+<br>
+
+<img src="furina-divider.png" width="100%">
+
+### 💙 Thank You
+
+Terima kasih sudah mampir.
+
+Semoga harimu menyenangkan.
+
+🌸
+
+</div>
+Repository ini bukan hanya tempat menyimpan project.
+
+Di sini ada proses belajar, rasa penasaran, kesalahan, kegagalan, dan sedikit demi sedikit perkembangan.
+
+Semoga ada sesuatu yang bisa kamu temukan di sini.
+
+---
+
+# 🌊 𝑾𝒉𝒐 𝑨𝒎 𝑰
+
+```yaml
+Name      : Rangga Sofyanto
+Country   : Indonesia 🇮🇩
+Nickname  : RNG SF
+Favorite  : Furina 💙
+Learning  : JavaScript • NodeJS • Automation
+```
+
+---
+
+# 🌸 𝑷𝒆𝒔𝒂𝒏 𝑫𝒂𝒓𝒊𝒌𝒖 𝑼𝒏𝒕𝒖𝒌 𝑴𝒖
+
+> ### 🌷 Musuh terbesar kita bukan selalu orang lain.
+
+Kadang...
+
+Musuh terbesar kita adalah **harapan**.
+
+Berharap kepada seseorang yang bahkan tidak pernah menjanjikan apa pun.
+
+Lalu kecewa karena kenyataan tidak sesuai dengan yang kita bayangkan.
+
+Sedangkan ego...
+
+Membuat kita tetap bertahan pada sesuatu yang sebenarnya sudah selesai.
+
+Belajarlah melepaskan.
+
+Karena tidak semua yang pergi harus dikejar.
+
+Dan tidak semua yang hilang harus kembali.
+
+---
+
+> ### 🌊 Untukmu...
+
+Kalau hari ini terasa berat...
+
+Istirahatlah.
+
+Tidak apa-apa.
+
+Tidak ada yang salah dengan berhenti sebentar.
+
+Minumlah air.
+
+Tarik napas.
+
+Lihat langit.
+
+Besok masih ada.
+
+Dan kamu masih punya banyak kesempatan.
+
+> **Pelan bukan berarti berhenti.**
+
+---
+
+<div align="center">
+
 <img
