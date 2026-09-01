@@ -1,0 +1,626 @@
+
+        :root {
+            --bg-base: #020202; 
+            
+            /* Wadah Kaca: Burem Estetik & Transparan */
+            --glass-bg: rgba(12, 12, 16, 0.15); 
+            --glass-modal: rgba(5, 5, 8, 0.8); 
+            --glass-border: rgba(255, 255, 255, 0.08);
+            
+            /* Warna Cahaya Penanda (Glow) Neon */
+            --glow-main: #00f0ff;
+            --glow-tk: #ff0050;
+            --glow-ig: #E1306C;
+            --glow-wa: #25D366;
+            --glow-wa-group: #128C7E;
+            --glow-wa-channel: #075E54;
+            
+            --text-main: #f8fafc;
+            --text-muted: #8b9bb4;
+            
+            --radius-xl: 24px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            
+            --trans-fast: 0.3s ease;
+            --trans-smooth: 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =========================================
+           ANIMASI GPU ACCELERATED (ANTI-LONCAT)
+           ========================================= */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes breatheOpacity {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        /* =========================================
+           LAYER BACKGROUND (PARTIKEL)
+           ========================================= */
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 1; 
+        }
+
+        .ambient-light {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at center, rgba(0,240,255,0.08) 0%, transparent 60%);
+            z-index: 2;
+            pointer-events: none;
+            will-change: opacity, transform;
+            animation: breatheOpacity 6s infinite alternate;
+        }
+
+        /* =========================================
+           WADAH UTAMA (FROSTED GLASS)
+           ========================================= */
+        .hub-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            margin: 2rem 1rem;
+            padding: 3rem 1.5rem 2rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            animation: float 6s ease-in-out infinite;
+            will-change: transform;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        /* =========================================
+           HEADER & PROFIL FOTO RNG
+           ========================================= */
+        .header-profile {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .logo-box {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.2rem;
+            background: #000;
+            border-radius: 30%; /* Bentuk melengkung */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform var(--trans-smooth);
+        }
+
+        .logo-box:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+
+        /* Putaran cahaya logo RNG - Kecepatan konstan 4 detik */
+        .logo-box::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, var(--glow-main), transparent 40%);
+            animation: rotateGlow 4s linear infinite;
+            z-index: 1;
+            opacity: 0.9;
+            will-change: transform;
+        }
+
+        /* Foto Profil yang menutupi bagian tengah */
+        .profile-img {
+            position: relative;
+            z-index: 2;
+            width: 96px; /* Lebih kecil sedikit dari box luar (100px) untuk efek cahaya pinggir (2px) */
+            height: 96px;
+            border-radius: 28%; /* Ngikutin lengkungan box luar */
+            object-fit: cover; /* Biar foto proporsional ga gepeng */
+            background-color: #08080a; /* Fallback kalau foto belum diload */
+        }
+
+        .username {
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .bio {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================================
+           LIST SOSIAL MEDIA (ANIMASI MULUS 60FPS)
+           ========================================= */
+        .social-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .social-btn-wrapper {
+            position: relative;
+            border-radius: var(--radius-lg);
+            padding: 1px;
+            overflow: hidden;
+            opacity: 0; 
+            background: rgba(255, 255, 255, 0.05);
+            transition: transform var(--trans-smooth);
+            will-change: transform;
+        }
+
+        .social-btn-wrapper:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .social-btn-wrapper:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* Cahaya Gradasi - Kecepatan dikunci di 3 detik */
+        .btn-glow-border {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 250%; height: 250%;
+            z-index: 1;
+            opacity: 0.4;
+            animation: rotateGlow 3s linear infinite;
+            pointer-events: none;
+            transition: opacity var(--trans-smooth);
+            will-change: transform, opacity;
+        }
+
+        .social-btn-wrapper:hover .btn-glow-border {
+            opacity: 1; 
+        }
+
+        .wrapper-tk .btn-glow-border { background: conic-gradient(transparent 75%, var(--glow-tk) 100%); }
+        .wrapper-ig .btn-glow-border { background: conic-gradient(transparent 75%, var(--glow-ig) 100%); }
+        .wrapper-wa .btn-glow-border { background: conic-gradient(transparent 75%, var(--glow-wa) 100%); }
+        .wrapper-wa-group .btn-glow-border { background: conic-gradient(transparent 75%, var(--glow-wa-group) 100%); }
+        .wrapper-wa-channel .btn-glow-border { background: conic-gradient(transparent 75%, var(--glow-wa-channel) 100%); }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.5rem;
+            background: #08080a; 
+            border-radius: calc(var(--radius-lg) - 1px);
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 2;
+            transition: background var(--trans-fast);
+        }
+
+        .social-btn-wrapper:hover .social-btn {
+            background: #0e0e12; 
+        }
+
+        .social-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            opacity: 0.7;
+            transition: transform var(--trans-fast), opacity var(--trans-fast), filter var(--trans-fast);
+        }
+
+        .social-btn-wrapper:hover .icon {
+            opacity: 1;
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        .wrapper-tk:hover .icon { fill: var(--glow-tk); filter: drop-shadow(0 0 5px rgba(255,0,80,0.5)); }
+        .wrapper-ig:hover .icon { fill: var(--glow-ig); filter: drop-shadow(0 0 5px rgba(225,48,108,0.5)); }
+        .wrapper-wa:hover .icon { fill: var(--glow-wa); filter: drop-shadow(0 0 5px rgba(37,211,102,0.5)); }
+        .wrapper-wa-group:hover .icon { fill: var(--glow-wa-group); filter: drop-shadow(0 0 5px rgba(18,140,126,0.5)); }
+        .wrapper-wa-channel:hover .icon { fill: var(--glow-wa-channel); filter: drop-shadow(0 0 5px rgba(7,94,84,0.5)); }
+
+        .arrow {
+            font-size: 1.2rem;
+            opacity: 0.3;
+            transition: transform var(--trans-fast), color var(--trans-fast);
+        }
+
+        .social-btn-wrapper:hover .arrow {
+            opacity: 1;
+            transform: translateX(5px);
+            color: #fff;
+        }
+
+        /* =========================================
+           TOMBOL ID SERVER MINECRAFT (DIPERBESAR)
+           ========================================= */
+        .mc-server-btn-wrapper {
+            position: relative;
+            border-radius: var(--radius-lg);
+            padding: 1px;
+            overflow: hidden;
+            opacity: 0; 
+            background: rgba(255, 255, 255, 0.05);
+            transition: transform var(--trans-smooth);
+            margin-top: 16px;
+            cursor: pointer;
+            will-change: transform;
+        }
+
+        .mc-server-btn-wrapper:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .mc-server-btn-wrapper:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        .mc-server-btn-wrapper .btn-glow-border {
+            background: conic-gradient(transparent 75%, var(--glow-main) 100%);
+        }
+
+        .mc-server-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.5rem;
+            background: #08080a; 
+            border-radius: calc(var(--radius-lg) - 1px);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            transition: background var(--trans-fast);
+        }
+
+        .mc-server-btn-wrapper:hover .mc-server-btn {
+            background: #0e0e12; 
+        }
+
+        .mc-server-btn-wrapper:hover .icon {
+            opacity: 1;
+            transform: scale(1.15) rotate(-5deg);
+            fill: var(--glow-main);
+            filter: drop-shadow(0 0 5px rgba(0,240,255,0.5));
+        }
+
+        .mc-server-btn-wrapper:hover .arrow {
+            opacity: 1;
+            transform: translateX(5px);
+            color: #fff;
+        }
+
+        /* =========================================
+           TOMBOL RAHASIA (HITBOX KETAT & SAMAR)
+           ========================================= */
+        .footer-container {
+            text-align: center; 
+            margin-top: 2rem;
+        }
+
+        .footer-secret {
+            display: inline-block; 
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.1); 
+            text-decoration: none;
+            letter-spacing: 2px;
+            padding: 2px 5px; 
+            transition: color var(--trans-fast), text-shadow var(--trans-fast);
+            cursor: pointer;
+        }
+
+        .footer-secret:hover {
+            color: var(--text-muted); 
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* =========================================
+           MODAL / POPUP WA & MINECRAFT
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--trans-smooth), visibility var(--trans-smooth);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: var(--glass-modal);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(37, 211, 102, 0.3);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem 2rem;
+            width: 90%;
+            max-width: 340px;
+            text-align: center;
+            transform: scale(0.9) translateY(20px);
+            transition: transform var(--trans-smooth);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-icon {
+            width: 48px; height: 48px;
+            fill: var(--glow-wa);
+            margin-bottom: 1.2rem;
+            filter: drop-shadow(0 0 10px rgba(37, 211, 102, 0.3));
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+
+        .modal-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: var(--glow-wa);
+            color: #000;
+            border: none;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background var(--trans-fast), transform var(--trans-fast);
+        }
+
+        .btn-primary:hover {
+            background: #1eb356;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--trans-fast), color var(--trans-fast);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        /* =========================================
+           SECRET ACCESS SYSTEM
+           3 TINGKAT: NORMAL / SPECIAL / SUPER
+           ========================================= */
+
+        .footer-secret {
+            border: 0;
+            background: transparent;
+            font-family: inherit;
+        }
+
+        .access-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 22px;
+            background:
+                radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.10), transparent 38%),
+                #020305;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity .45s ease, visibility .45s ease;
+            overflow: hidden;
+        }
+
+        .access-screen.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .access-screen::before {
+            content: "";
+            position: absolute;
+            inset: -25%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(0, 240, 255, .08), transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(140, 80, 255, .08), transparent 28%);
+            filter: blur(30px);
+            animation: accessAura 8s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes accessAura {
+            from { transform: scale(1) rotate(0deg); }
+            to { transform: scale(1.12) rotate(5deg); }
+        }
+
+        .access-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            z-index: 5;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255,255,255,.04);
+            color: rgba(255,255,255,.7);
+            font-size: 22px;
+            cursor: pointer;
+            transition: .25s ease;
+        }
+
+        .access-close:hover {
+            background: rgba(255,255,255,.09);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .access-card {
+            position: relative;
+            z-index: 2;
+            width: min(92vw, 420px);
+            padding: 34px 26px 28px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,.11);
+            background: rgba(7, 9, 13, .72);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            box-shadow:
+                0 30px 90px rgba(0,0,0,.65),
+                inset 0 1px 0 rgba(255,255,255,.04);
+            text-align: center;
+            transform: translateY(18px) scale(.96);
+            transition: transform .5s cubic-bezier(.16,1,.3,1);
+        }
+
+        .access-screen.active .access-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .access-symbol {
+            width: 74px;
+            height: 74px;
+            margin: 0 auto 20px;
+            border-radius: 22px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(0,240,255,.30);
+            background: rgba(0,240,255,.035);
+            box-shadow: 0 0 35px rgba(0,240,255,.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .access-symbol::after {
+            content: "";
+            position: absolute;
+            inset: -80%;
+            background: conic-gradient(
+                transparent,
+                rgba(0,240,255,.6),
+                transparent 28%
+            );
+            animation: accessSpin 4s linear infinite;
+        }
+
+        @keyframes accessSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .access-symbol span {
+            position: relative;
+            z-index: 2;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .access-kicker {
+            colo
