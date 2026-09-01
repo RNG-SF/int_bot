@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+
+<title>RNG_SF</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+    --bg:#070707;
+    --card:#101012;
+    --card2:#151518;
+    --border:rgba(255,255,255,.09);
+    --text:#f2f2f2;
+    --muted:#8d8d95;
+}
+
+body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow-x:hidden;
+}
+
+#particles{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:.45;
+}
+
+.bg-glow{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at 50% 30%,
+            rgba(255,255,255,.045),
+            transparent 55%
+        );
+}
+
+.container{
+    position:relative;
+    z-index:2;
+
+    width:min(420px,calc(100% - 28px));
+
+    padding:30px 18px 22px;
+
+    border:1px solid var(--border);
+    border-radius:24px;
+
+    background:rgba(10,10,12,.78);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.55);
+
+    animation:appear .55s ease;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.profile{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo{
+    width:82px;
+    height:82px;
+
+    margin:0 auto 14px;
+
+    border-radius:22px;
+    overflow:hidden;
+
+    border:1px solid var(--border);
+
+    background:#090909;
+}
+
+.logo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.title{
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:3px;
+}
+
+.subtitle{
+    margin-top:6px;
+
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+/* =========================
+   LINKS
+========================= */
+
+.links{
+    display:grid;
+    gap:10px;
+}
+
+.link{
+    min-height:56px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 17px;
+
+    border:1px solid var(--border);
+    border-radius:15px;
+
+    background:rgba(255,255,255,.025);
+
+    color:var(--text);
+    text-decoration:none;
+
+    font-size:14px;
+    font-weight:600;
+
+    transition:.2s ease;
+}
+
+.link:hover{
+    background:rgba(255,255,255,.065);
+    transform:translateY(-2px);
+}
+
+.arrow{
+    color:#666;
+    transition:.2s;
+}
+
+.link:hover .arrow{
+    color:#fff;
+    transform:translateX(4px);
+}
+
+/* =========================
+   SECRET BUTTON
+========================= */
+
+.secret-button{
+    display:block;
+
+    margin-top:22px;
+
+    border:0;
+    outline:0;
+
+    background:none;
+
+    color:rgba(255,255,255,.13);
+
+    font-size:10px;
+    letter-spacing:2px;
+
+    cursor:pointer;
+
+    text-align:center;
+
+    width:100%;
+
+    transition:.2s;
+}
+
+.secret-button:hover{
+    color:#777;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:18px;
+
+    background:rgba(0,0,0,.78);
+
+    backdrop-filter:blur(13px);
+    -webkit-backdrop-filter:blur(13px);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:.25s ease;
+}
+
+.modal.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.modal-box{
+    position:relative;
+
+    width:min(390px,100%);
+
+    padding:26px 20px 20px;
+
+    border:1px solid var(--border);
+    border-radius:22px;
+
+    background:var(--card2);
+
+    box-shadow:
+        0 30px 90px rgba(0,0,0,.75);
+
+    transform:translateY(12px) scale(.97);
+
+    transition:.25s ease;
+}
+
+.modal.show .modal-box{
+    transform:none;
+}
+
+/* =========================
+   CLOSE
+========================= */
+
+.close{
+    position:absolute;
+
+    right:10px;
+    top:9px;
+
+    width:34px;
+    height:34px;
+
+    border:0;
+    background:transparent;
+
+    color:#666;
+
+    font-size:22px;
+
+    cursor:pointer;
+}
+
+.close:hover{
+    color:#fff;
+}
+
+/* =========================
+   STEP
+========================= */
+
+.step{
+    display:none;
+}
+
+.step.active{
+    display:block;
+}
+
+.step-icon{
+    width:42px;
+    height:42px;
+
+    display:grid;
+    place-items:center;
+
+    margin-bottom:16px;
+
+    border-radius:13px;
+
+    background:rgba(255,255,255,.055);
+    border:1px solid var(--border);
+
+    color:#ddd;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+h2{
+    font-size:19px;
+    margin-bottom:8px;
+}
+
+.description{
+    color:var(--muted);
+
+    font-size:13px;
+    line-height:1.6;
+
+    margin-bottom:17px;
+}
+
+.notice{
+    padding:13px 14px;
+
+    margin-bottom:14px;
+
+    border:1px solid var(--border);
+    border-radius:13px;
+
+    background:rgba(255,255,255,.025);
+
+    color:#c9c9ce;
+
+    font-size:13px;
+    line-height:1.6;
+
+    white-space:pre-wrap;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+input{
+    width:100%;
+    height:48px;
+
+    border:1px solid var(--border);
+    border-radius:13px;
+
+    outline:none;
+
+    background:#09090b;
+
+    color:#fff;
+
+    padding:0 14px;
+
+    font-size:15px;
+
+    transition:.2s;
+}
+
+input::placeholder{
+    color:#55555d;
+}
+
+input:focus{
+    border-color:rgba(255,255,255,.27);
+
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,.035);
+}
+
+/* =========================
+   DATE
+========================= */
+
+.date-inputs{
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        1.45fr;
+
+    gap:8px;
+}
+
+.date-inputs input{
+    text-align:center;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.buttons{
+    display:grid;
+    gap:9px;
+
+    margin-top:16px;
+}
+
+button,
+.result-link{
+    width:100%;
+    min-height:47px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:13px;
+
+    border:1px solid var(--border);
+
+    background:rgba(255,255,255,.07);
+
+    color:#fff;
+
+    font:600 14px inherit;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    transition:.2s ease;
+}
+
+button:hover,
+.result-link:hover{
+    background:rgba(255,255,255,.12);
+}
+
+.primary{
+    background:#eee;
+    border-color:#eee;
+
+    color:#080808;
+}
+
+.primary:hover{
+    background:#fff;
+}
+
+.secondary{
+    background:transparent;
+    color:#888;
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error{
+    min-height:18px;
+
+    margin-top:8px;
+
+    color:#e77b7b;
+
+    font-size:12px;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+.result-name{
+    margin-bottom:7px;
+
+    color:#777;
+
+    font-size:11px;
+
+    letter-spacing:1.5px;
+
+    text-transform:uppercase;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:360px){
+
+    .container{
+        width:calc(100% - 18px);
+        padding:25px 14px 18px;
+    }
+
+    .date-inputs{
+        gap:5px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="bg-glow"></div>
+
+
+<!-- ======================================
+     HALAMAN UTAMA
+====================================== -->
+
+<main class="container">
+
+    <header class="profile">
+
+        <div class="logo">
+            <img
+                src="logo.jpg"
+                alt="RNG_SF"
+            >
+        </div>
+
+        <div class="title">
+            RNG_SF
+        </div>
+
+        <div class="subtitle">
+            Portal pribadi.
+        </div>
+
+    </header>
+
+
+    <section class="links">
+
+        <a
+            class="link"
+            href="https://tiktok.com/@rng_sf"
+            target="_blank"
+            rel="noopener"
+        >
+            <span>TikTok</span>
+            <span class="arrow">→</span>
+        </a>
+
+
+        <a
+            class="link"
+            href="https://instagram.com/rng_sf"
+            target="_blank"
+            rel="noopener"
+        >
+            <span>Instagram</span>
+            <span class="arrow">→</span>
+        </a>
+
+
+        <a
+            class="link"
+            href="#"
+            id="whatsapp"
+        >
+            <span>WhatsApp</span>
+            <span class="arrow">→</span>
+        </a>
+
+
+        <a
+            class="link"
+            href="https://chat.whatsapp.com/L4QJdNTLtAWBjYK7fKEgnG"
+            target="_blank"
+            rel="noopener"
+        >
+            <span>Grup Bot WA</span>
+            <span class="arrow">→</span>
+        </a>
+
+
+        <a
+            class="link"
+            href="https://chat.whatsapp.com/E619pGDvVjO6FOTE9XMPdp"
+            target="_blank"
+            rel="noopener"
+        >
+            <span>Grup MC</span>
+            <span class="arrow">→</span>
+        </a>
+
+
+        <a
+            class="link"
+            href="https://whatsapp.com/channel/0029VbCDybuHFxP8PxVSbI3l"
+            target="_blank"
+            rel="noopener"
+        >
+            <span>Saluran WhatsApp</span>
+            <span class="arrow">→</span>
+        </a>
+
+    </section>
+
+
+    <!--
+        TOMBOL RAHASIA
+
+        Tidak langsung menuju halaman lain.
+        JavaScript akan membuka sistem akses.
+    -->
+
+    <button
+        class="secret-button"
+        id="secretButton"
+        type="button"
+    >
+        RNG NETWORK
+    </button>
+
+</main>
+
+
+
+<!-- ======================================
+     MODAL SISTEM AKSES
+====================================== -->
+
+<div
+    class="modal"
+    id="modal"
+>
+
+    <div class="modal-box">
+
+        <button
+            class="close"
+            id="closeModal"
+            type="button"
+            aria-label="Tutup"
+        >
+            ×
+        </button>
+
+
+        <!-- ==============================
+             TAHAP 1
+        =============================== -->
+
+        <section
+            class="step active"
+            id="step1"
+        >
+
+            <div class="step-icon">
+                01
+            </div>
+
+            <h2 id="unlockTitle">
+                Akses khusus
+            </h2>
+
+            <p
+                class="description"
+                id="unlockDescription"
+            >
+                Masukkan password untuk melanjutkan.
+            </p>
+
+            <div
+                class="notice"
+                id="unlockNotice"
+            ></div>
+
+            <input
+                id="unlockPassword"
+                type="password"
+                autocomplete="off"
+                placeholder="Password"
+            >
+
+            <div
+                class="error"
+                id="unlockError"
+            ></div>
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    id="unlockButton"
+                    type="button"
+                >
+                    Lanjut
+                </button>
+
+                <button
+                    class="secondary"
+                    id="cancelButton"
+                    type="button"
+                >
+                    Tutup
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             PILIHAN LANJUT
+        =============================== -->
+
+        <section
+            class="step"
+            id="stepChoice"
+        >
+
+            <div class="step-icon">
+                02
+            </div>
+
+            <h2>
+                Lanjut?
+            </h2>
+
+            <p class="description">
+                Pilih apakah ingin melanjutkan
+                ke akses berikutnya.
+            </p>
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    id="continueButton"
+                    type="button"
+                >
+                    Lanjut
+                </button>
+
+                <button
+                    class="secondary"
+                    id="rejectButton"
+                    type="button"
+                >
+                    Tidak
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             TIDAK LANJUT
+        =============================== -->
+
+        <section
+            class="step"
+            id="stepRejected"
+        >
+
+            <div class="step-icon">
+                ✓
+            </div>
+
+            <h2 id="rejectTitle">
+                Selesai
+            </h2>
+
+            <div
+                class="notice"
+                id="rejectMessage"
+            ></div>
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    id="rejectClose"
+                    type="button"
+                >
+                    Tutup
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             TAHAP 2
+        =============================== -->
+
+        <section
+            class="step"
+            id="step2"
+        >
+
+            <div class="step-icon">
+                02
+            </div>
+
+            <h2>
+                Verifikasi
+            </h2>
+
+            <p
+                class="description"
+                id="stage2Description"
+            >
+                Masukkan tanggal ULTA atau password
+                cadangan.
+            </p>
+
+            <div
+                class="notice"
+                id="stage2Notice"
+            ></div>
+
+
+            <div class="date-inputs">
+
+                <input
+                    id="day2"
+                    inputmode="numeric"
+                    maxlength="2"
+                    placeholder="DD"
+                >
+
+                <input
+                    id="month2"
+                    inputmode="numeric"
+                    maxlength="2"
+                    placeholder="MM"
+                >
+
+                <input
+                    id="year2"
+                    inputmode="numeric"
+                    maxlength="4"
+                    placeholder="YYYY"
+                >
+
+            </div>
+
+
+            <input
+                id="backupPassword"
+                type="password"
+                autocomplete="off"
+                placeholder="Password cadangan"
+                style="margin-top:9px;"
+            >
+
+
+            <div
+                class="error"
+                id="stage2Error"
+            ></div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    id="stage2Button"
+                    type="button"
+                >
+                    Verifikasi
+                </button>
+
+                <button
+                    class="secondary"
+                    id="backToChoice"
+                    type="button"
+                >
+                    Kembali
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             TAHAP 3
+        =============================== -->
+
+        <section
+            class="step"
+            id="step3"
+        >
+
+            <div class="step-icon">
+                03
+            </div>
+
+            <h2>
+                Verifikasi ULTA
+            </h2>
+
+            <p class="description">
+                Masukkan tanggal ULTA.
+            </p>
+
+
+            <div class="date-inputs">
+
+                <input
+                    id="day3"
+                    inputmode="numeric"
+                    maxlength="2"
+                    placeholder="DD"
+                >
+
+                <input
+                    id="month3"
+                    inputmode="numeric"
+                    maxlength="2"
+                    placeholder="MM"
+                >
+
+                <input
+                    id="year3"
+                    inputmode="numeric"
+                    maxlength="4"
+                    placeholder="YYYY"
+                >
+
+            </div>
+
+
+            <div
+                class="error"
+                id="stage3Error"
+            ></div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    id="stage3Button"
+                    type="button"
+                >
+                    Lanjut
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             TAHAP 4
+        =============================== -->
+
+        <section
+            class="step"
+            id="step4"
+        >
+
+            <div class="step-icon">
+                04
+            </div>
+
+            <h2>
+                Verifikasi tambahan
+            </h2>
+
+            <p class="description">
+                Masukkan kode tambahan yang diberikan
+                untuk akses ini.
+            </p>
+
+
+            <input
+                id="stage4Password"
+                autocomplete="off"
+                placeholder="Inisial / kode"
+            >
+
+
+            <div
+                class="error"
+                id="stage4Error"
+            ></div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    id="stage4Button"
+                    type="button"
+                >
+                    Verifikasi
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             HASIL
+        =============================== -->
+
+        <section
+            class="step"
+            id="stepResult"
+        >
+
+            <div class="step-icon">
+                ✓
+            </div>
+
+
+            <div
+                class="result-name"
+                id="resultName"
+            ></div>
+
+
+            <h2 id="resultTitle">
+                Akses berhasil
+            </h2>
+
+
+            <div
+                class="notice"
+                id="resultMessage"
+            ></div>
+
+
+            <div
+                class="buttons"
+                id="resultButtons"
+            ></div>
+
+        </section>
+
+    </div>
+</div>
+
+
+
+<!-- ======================================
+     DATA PASSWORD
+
+     GANTI PATH INI JIKA PASSWORDS.JS
+     KAMU BERADA DI TEMPAT LAIN.
+
+     CONTOH:
+
+     private/passwords.js
+
+     atau:
+
+     private/2/5/1/1/2/0/0/6/passwords.js
+====================================== -->
+
+<script src="private/2/5/1/1/2/0/0/6/passwords.js"></script>
+
+
+<script>
+
+/* =====================================================
+   SISTEM AKSES
+===================================================== */
+
+"use strict";
+
+
+const $ = id =>
+    document.getElementById(id);
+
+
+const modal =
+    $("modal");
+
+
+const steps = [
+    "step1",
+    "stepChoice",
+    "stepRejected",
+    "step2",
+    "step3",
+    "step4",
+    "stepResult"
+];
+
+
+let currentPerson = null;
+
+
+/* =====================================================
+   DATA CONFIG
+===================================================== */
+
+function getData(){
+
+    return window.ACCESS_DATA || null;
+
+}
+
+
+/* =====================================================
+   TAMPILKAN STEP
+===================================================== */
+
+function showStep(id){
+
+    steps.forEach(step => {
+
+        const element =
+            $(step);
+
+        if(element){
+
+            element.classList.toggle(
+                "active",
+                step === id
+            );
+
+        }
+
+    });
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function clearErrors(){
+
+    document
+        .querySelectorAll(".error")
+        .forEach(element => {
+
+            element.textContent = "";
+
+        });
+
+}
+
+
+/* =====================================================
+   CLEAR INPUT
+===================================================== */
+
+function clearInputs(){
+
+    document
+        .querySelectorAll(".modal input")
+        .forEach(input => {
+
+            input.value = "";
+
+        });
+
+}
+
+
+/* =====================================================
+   BUKA MODAL
+===================================================== */
+
+function openModal(){
+
+    modal.classList.add("show");
+
+    clearErrors();
+
+    showStep("step1");
+
+    const data =
+        getData();
+
+
+    if(data && data.unlock){
+
+        $("unlockTitle").textContent =
+            data.unlock.title ||
+            "Akses khusus";
+
+
+        $("unlockDescription").textContent =
+            data.unlock.description ||
+            "Masukkan password untuk melanjutkan.";
+
+
+        $("unlockNotice").textContent =
+            data.unlock.message ||
+            "";
+
+    }else{
+
+        $("unlockNotice").textContent =
+            "Data akses belum tersedia.";
+
+    }
+
+
+    setTimeout(() => {
+
+        $("unlockPassword").focus();
+
+    },150);
+
+}
+
+
+/* =====================================================
+   TUTUP MODAL
+===================================================== */
+
+function closeModal(){
+
+    modal.classList.remove("show");
+
+    clearInputs();
+
+    clearErrors();
+
+    currentPerson = null;
+
+}
+
+
+$("secretButton").addEventListener(
+    "click",
+    openModal
+);
+
+
+$("closeModal").addEventListener(
+    "click",
+    closeModal
+);
+
+
+$("cancelButton").addEventListener(
+    "click",
+    closeModal
+);
+
+
+$("rejectClose").addEventListener(
+    "click",
+    closeModal
+);
+
+
+modal.addEventListener(
+    "click",
+    event => {
+
+        if(event.target === modal){
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   TAHAP 1
+===================================================== */
+
+$("unlockButton").addEventListener(
+    "click",
+    () => {
+
+        const data =
+            getData();
+
+
+        if(
+            !data ||
+            !data.unlock
+        ){
+
+            $("unlockError").textContent =
+                "Konfigurasi akses tidak ditemukan.";
+
+            return;
+
+        }
+
+
+        const password =
+            $("unlockPassword")
+            .value
+            .trim();
+
+
+        if(
+            password ===
+            String(data.unlock.password)
+        ){
+
+            showStep("stepChoice");
+
+        }else{
+
+            $("unlockError").textContent =
+                "Password tidak sesuai.";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   PILIHAN
+===================================================== */
+
+$("continueButton").addEventListener(
+    "click",
+    () => {
+
+        const data =
+            getData();
+
+
+        if(data && data.stage2){
+
+            $("stage2Description").textContent =
+                data.stage2.description ||
+                "Masukkan tanggal ULTA atau password cadangan.";
+
+
+            $("stage2Notice").textContent =
+                data.stage2.message ||
+                "";
+
+        }
+
+
+        showStep("step2");
+
+
+        setTimeout(
+            () => $("day2").focus(),
+            100
+        );
+
+    }
+);
+
+
+$("rejectButton").addEventListener(
+    "click",
+    () => {
+
+        const data =
+            getData();
+
+
+        $("rejectTitle").textContent =
+            data?.unlock?.rejectTitle ||
+            "Selesai";
+
+
+        $("rejectMessage").textContent =
+            data?.unlock?.rejectMessage ||
+            "Tidak ada proses lanjutan.";
+
+
+        showStep("stepRejected");
+
+    }
+);
+
+
+$("backToChoice").addEventListener(
+    "click",
+    () => {
+
+        showStep("stepChoice");
+
+    }
+);
+
+
+/* =====================================================
+   DATE VALIDATION
+===================================================== */
+
+function getDate(dayId,monthId,yearId){
+
+    const day =
+        $(dayId).value.trim();
+
+
+    const month =
+        $(monthId).value.trim();
+
+
+    const year =
+        $(yearId).value.trim();
+
+
+    if(
+        !/^\d{2}$/.test(day) ||
+        !/^\d{2}$/.test(month) ||
+        !/^\d{4}$/.test(year)
+    ){
+
+        return null;
+
+    }
+
+
+    const d =
+        Number(day);
+
+
+    const m =
+        Number(month);
+
+
+    const y =
+        Number(year);
+
+
+    const date =
+        new Date(
+            y,
+            m - 1,
+            d
+        );
+
+
+    if(
+        date.getFullYear() !== y ||
+        date.getMonth() !== m - 1 ||
+        date.getDate() !== d
+    ){
+
+        return null;
+
+    }
+
+
+    return (
+        day +
+        month +
+        year
+    );
+
+}
+
+
+/* =====================================================
+   DATE INPUT
+===================================================== */
+
+[
+    "day2",
+    "month2",
+    "year2",
+    "day3",
+    "month3",
+    "year3"
+
+].forEach(id => {
+
+    $(id).addEventListener(
+        "input",
+        () => {
+
+            $(id).value =
+                $(id).value
+                .replace(/\D/g,"");
+
+        }
+    );
+
+});
+
+
+/* =====================================================
+   TAHAP 2
+===================================================== */
+
+$("stage2Button").addEventListener(
+    "click",
+    () => {
+
+        const data =
+            getData();
+
+
+        if(
+            !data ||
+            !data.stage2
+        ){
+
+            $("stage2Error").textContent =
+                "Konfigurasi tahap 2 tidak ditemukan.";
+
+            return;
+
+        }
+
+
+        const date =
+            getDate(
+                "day2",
+                "month2",
+                "year2"
+            );
+
+
+        const backup =
+            $("backupPassword")
+            .value
+            .trim();
+
+
+        const ultaBenar =
+            date &&
+            date ===
+            String(data.stage2.ulta);
+
+
+        const backupBenar =
+            backup &&
+            backup ===
+            String(data.stage2.backup);
+
+
+        if(
+            ultaBenar ||
+            backupBenar
+        ){
+
+            $("stage2Error").textContent =
+                "";
+
+
+            showStep("step3");
+
+
+            setTimeout(
+                () => $("day3").focus(),
+                100
+            );
+
+        }else{
+
+            $("stage2Error").textContent =
+                "Tanggal atau password cadangan tidak sesuai.";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   TAHAP 3
+===================================================== */
+
+$("stage3Button").addEventListener(
+    "click",
+    () => {
+
+        const date =
+            getDate(
+                "day3",
+                "month3",
+                "year3"
+            );
+
+
+        if(!date){
+
+            $("stage3Error").textContent =
+                "Masukkan tanggal valid: DD / MM / YYYY.";
+
+            return;
+
+        }
+
+
+        const people =
+            Array.isArray(
+                getData()?.people
+            )
+            ? getData().people
+            : [];
+
+
+        const matches =
+            people.filter(
+                person =>
+                    String(person.ulta) ===
+                    date
+            );
+
+
+        if(!matches.length){
+
+            $("stage3Error").textContent =
+                "ULTA tidak ditemukan.";
+
+            return;
+
+        }
+
+
+        /*
+           Kalau cuma satu orang
+        */
+
+        if(matches.length === 1){
+
+            currentPerson =
+                matches[0];
+
+
+            if(
+                currentPerson.stage4 &&
+                currentPerson.stage4.enabled
+            ){
+
+                showStep("step4");
+
+
+                setTimeout(
+                    () =>
+                        $("stage4Password").focus(),
+                    100
+                );
+
+            }else{
+
+                renderResult(
+                    currentPerson
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        /*
+           Kalau ULTA sama
+        */
+
+        const protectedPeople =
+            matches.filter(
+                person =>
+                    person.stage4 &&
+                    person.stage4.enabled
+            );
+
+
+        if(protectedPeople.length){
+
+            currentPerson =
+                protectedPeople;
+
+
+            showStep("step4");
+
+
+            setTimeout(
+                () =>
+                    $("stage4Password").focus(),
+                100
+            );
+
+        }else{
+
+            renderResult(
+                matches[0]
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   TAHAP 4
+===================================================== */
+
+$("stage4Button").addEventListener(
+    "click",
+    () => {
+
+        if(!currentPerson){
+
+            return;
+
+        }
+
+
+        const code =
+            $("stage4Password")
+            .value
+            .trim()
+            .toUpperCase();
+
+
+        const candidates =
+            Array.isArray(currentPerson)
+            ? currentPerson
+            : [currentPerson];
+
+
+        const found =
+            candidates.find(
+                person => {
+
+                    return (
+                        person.stage4 &&
+                        person.stage4.enabled &&
+                        String(
+                            person.stage4.password
+                        ).toUpperCase() ===
+                        code
+                    );
+
+                }
+            );
+
+
+        if(found){
+
+            renderResult(found);
+
+        }else{
+
+            $("stage4Error").textContent =
+                "Kode tambahan tidak sesuai.";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   HASIL AKHIR
+===================================================== */
+
+function renderResult(person){
+
+    currentPerson =
+        person;
+
+
+    const result =
+        person.result || {};
+
+
+    const notices =
+        getData()?.notices || {};
+
+
+    const notice =
+        notices[person.notice];
+
+
+    $("resultName").textContent =
+        person.name ||
+        "Akses khusus";
+
+
+    $("resultTitle").textContent =
+        result.title ||
+        notice?.title ||
+        "Akses berhasil";
+
+
+    $("resultMessage").textContent =
+        result.message ||
+        notice?.message ||
+        "Tidak ada pemberitahuan.";
+
+
+    const buttons =
+        $("resultButtons");
+
+
+    buttons.innerHTML = "";
+
+
+    /*
+       JIKA ADA LINK / FILE
+    */
+
+    if(
+        result.type === "file" &&
+        result.link
+    ){
+
+        const link =
+            document.createElement("a");
+
+
+        link.className =
+            "result-link primary";
+
+
+        link.href =
+            result.link;
+
+
+        link.target =
+            "_blank";
+
+
+        link.rel =
+            "noopener";
+
+
+        link.textContent =
+            result.button ||
+            "Buka";
+
+
+
+        buttons.appendChild(link);
+
+    }
+
+
+    /*
+       TOMBOL TUTUP
+    */
+
+    const close =
+        document.createElement("button");
+
+
+    close.type =
+        "button";
+
+
+    close.className =
+        "secondary";
+
+
+    close.textContent =
+        "Tutup";
+
+
+    close.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    buttons.appendChild(close);
+
+
+    showStep("stepResult");
+
+}
+
+
+/* =====================================================
+   ENTER
+===================================================== */
+
+$("unlockPassword")
+.addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Enter"){
+
+            $("unlockButton").click();
+
+        }
+
+    }
+);
+
+
+$("backupPassword")
+.addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Enter"){
+
+            $("stage2Button").click();
+
+        }
+
+    }
+);
+
+
+$("stage4Password")
+.addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Enter"){
+
+            $("stage4Button").click();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   WHATSAPP
+===================================================== */
+
+$("whatsapp").addEventListener(
+    "click",
+    event => {
+
+        event.preventDefault();
+
+        window.open(
+            "https://wa.me/6285745596459",
+            "_blank",
+            "noopener"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+const canvas =
+    $("particles");
+
+
+const ctx =
+    canvas.getContext("2d");
+
+
+let particles = [];
+
+
+function resizeCanvas(){
+
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+
+    canvas.width =
+        innerWidth * dpr;
+
+
+    canvas.height =
+        innerHeight * dpr;
+
+
+    canvas.style.width =
+        innerWidth + "px";
+
+
+    canvas.style.height =
+        innerHeight + "px";
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    const count =
+        Math.min(
+            50,
+            Math.max(
+                18,
+                Math.floor(
+                    innerWidth *
+                    innerHeight /
+                    20000
+                )
+            )
+        );
+
+
+    particles =
+        Array.from(
+            {length:count},
+            () => ({
+
+                x:
+                    Math.random() *
+                    innerWidth,
+
+                y:
+                    Math.random() *
+                    innerHeight,
+
+                vx:
+                    (Math.random() - .5)
+                    * .20,
+
+                vy:
+                    (Math.random() - .5)
+                    * .20,
+
+                r:
+                    Math.random()
+                    * 1.2 + .4
+
+            })
+        );
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+resizeCanvas();
+
+
+function animateParticles(){
+
+    ctx.clearRect(
+        0,
+        0,
+        innerWidth,
+        innerHeight
+    );
+
+
+    for(
+        let i = 0;
+        i < particles.length;
+        i++
+    ){
+
+        const p =
+            particles[i];
+
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+
+        if(
+            p.x < 0 ||
+            p.x > innerWidth
+        ){
+
+            p.vx *= -1;
+
+        }
+
+
+        if(
+            p.y < 0 ||
+            p.y > innerHeight
+        ){
+
+            p.vy *= -1;
+
+        }
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.r,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.20)";
+
+
+        ctx.fill();
+
+
+        for(
+            let j = i + 1;
+            j < particles.length;
+            j++
+        ){
+
+            const q =
+                particles[j];
+
+
+            const dx =
+                p.x - q.x;
+
+
+            const dy =
+                p.y - q.y;
+
+
+            const distance =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                );
+
+
+            if(distance < 105){
+
+                ctx.beginPath();
+
+
+                ctx.moveTo(
+                    p.x,
+                    p.y
+                );
+
+
+                ctx.lineTo(
+                    q.x,
+                    q.y
+                );
+
+
+                ctx.strokeStyle =
+                    `rgba(255,255,255,${
+                        .06 *
+                        (
+                            1 -
+                            distance / 105
+                        )
+                    })`;
+
+
+                ctx.lineWidth =
+                    .5;
+
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animateParticles
+    );
+
+}
+
+
+animateParticles();
+
+</script>
+
+</body>
+</html>
