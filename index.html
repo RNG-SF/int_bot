@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#030303">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="RNG_SF — Secure Portal">
+  <title>Portal R | Link Hub</title>
+
+  <!--
+    RNG_SF MODULAR PORTAL
+    --------------------------------------------------
+    index.html sengaja dibuat tipis.
+    Jangan taruh daftar tombol/password/pesan di sini.
+
+    Pengaturan:
+      config/settings.js   -> identitas portal
+      config/buttons.js     -> tombol + link/data
+      config/passwords.js   -> sistem akses
+      config/messages.js    -> pemberitahuan
+
+    Mesin:
+      engine.js             -> logic + animasi interaksi
+      assets/style.css      -> seluruh tampilan
+  -->
+  <link rel="preload" as="image" href="logo.jpg">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+  <!-- Background -->
+  <div class="ambient-light" aria-hidden="true"></div>
+  <canvas id="network-canvas" aria-hidden="true"></canvas>
+
+  <!-- Portal utama -->
+  <main class="hub-container" id="portal" aria-labelledby="portal-name">
+    <header class="header-profile">
+      <div class="logo-box" aria-hidden="true">
+        <img src="logo.jpg" alt="" class="profile-img" width="96" height="96">
+      </div>
+
+      <h1 class="username" id="portal-name">RNG_SF</h1>
+      <p class="bio">Secure Portal. Jaringan Tersinkronisasi.</p>
+    </header>
+
+    <!--
+      Semua tombol dibuat otomatis oleh engine.js
+      berdasarkan config/buttons.js.
+    -->
+    <section aria-label="Daftar akses">
+      <div class="social-list" id="dynamic-buttons"></div>
+
+      <!--
+        Fallback kecil kalau JavaScript/config gagal dimuat.
+        Engine akan menyembunyikannya ketika tombol berhasil dibuat.
+      -->
+      <p class="portal-fallback" id="portal-fallback" hidden>
+        Portal sedang memuat konfigurasi…
+      </p>
+    </section>
+
+    <!-- Tombol rahasia -->
+    <footer class="footer-container">
+      <button
+        type="button"
+        id="open-secret-access"
+        class="footer-secret animate-item"
+        aria-haspopup="dialog"
+        aria-controls="secret-access"
+      >RNG NETWORK v4.0</button>
+    </footer>
+  </main>
+
+  <!-- =====================================================
+       PRIVATE / SPECIAL ACCESS
+       ===================================================== -->
+  <div
+    class="access-screen"
+    id="secret-access"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="access-title"
+    aria-describedby="access-description"
+  >
+    <button
+      type="button"
+      class="access-close"
+      id="secret-close"
+      aria-label="Tutup akses"
+    >×</button>
+
+    <div class="access-card" tabindex="-1">
+      <div class="access-orbit" aria-hidden="true"></div>
+
+      <div class="access-symbol" aria-hidden="true">
+        <span>R</span>
+      </div>
+
+      <div class="access-kicker">RNG NETWORK</div>
+      <h2 class="access-title" id="access-title">PRIVATE ACCESS</h2>
+
+      <p class="access-description" id="access-description">
+        Masukkan kode akses untuk melanjutkan.
+      </p>
+
+      <form class="access-form" id="access-form" autocomplete="off">
+        <label class="sr-only" for="access-input">Kode akses</label>
+        <div class="input-shell">
+          <span class="input-lock" aria-hidden="true">⌁</span>
+          <input
+            class="access-input"
+            id="access-input"
+            type="password"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            maxlength="32"
+            placeholder="Masukkan kode"
+            aria-describedby="access-status"
+          >
+        </div>
+
+        <button class="access-button" id="access-submit" type="submit">
+          <span>CONTINUE</span>
+          <span class="button-arrow" aria-hidden="true">→</span>
+        </button>
+      </form>
+
+      <div class="access-status" id="access-status" role="status" aria-live="polite"></div>
+      <div class="special-badge" id="special-badge" aria-live="polite"></div>
+      <div class="super-note" id="super-note" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       SUCCESS / FINAL STEP
+       =====================================================
+       Sengaja dibuat ringkas. Tidak ada lagi teks panjang yang
+       muncul di samping halaman.
+       ===================================================== -->
+  <div
+    class="secret-success"
+    id="secret-success"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="success-title"
+  >
+    <div class="success-card" tabindex="-1">
+      <div class="success-mark" aria-hidden="true">✓</div>
+      <button class="success-button" id="secret-continue" type="button">
+        LANJUT <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL DATA DINAMIS
+       engine.js membuat modal ID/data secara otomatis.
+       ===================================================== -->
+
+  <!-- Konfigurasi harus dimuat SEBELUM engine. -->
+  <script src="config/settings.js"></script>
+  <script src="config/buttons.js"></script>
+  <script src="config/passwords.js"></script>
+  <script src="config/messages.js"></script>
+  <script src="engine.js" defer></script>
+
+  <noscript>
+    <div class="noscript-message">
+      JavaScript diperlukan untuk menjalankan portal ini.
+    </div>
+  </noscript>
+</body>
+</html>
