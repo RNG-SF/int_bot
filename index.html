@@ -1,0 +1,8425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<meta
+    name="theme-color"
+    content="#05070b"
+>
+
+<meta
+    name="color-scheme"
+    content="dark"
+>
+
+<title>RNG_NET</title>
+
+<style>
+
+/* =========================================================
+   RNG_NET
+   MAIN INDEX
+   Dibuat ulang dari nol.
+   Jangan masukkan password di file ini.
+   ========================================================= */
+
+
+/* =========================================================
+   ROOT
+   ========================================================= */
+
+:root{
+
+    --bg:
+        #05070b;
+
+    --bg-soft:
+        #090c12;
+
+    --panel:
+        rgba(14,18,25,.78);
+
+    --panel-solid:
+        #0d1118;
+
+    --panel-soft:
+        rgba(255,255,255,.035);
+
+    --border:
+        rgba(255,255,255,.09);
+
+    --border-strong:
+        rgba(255,255,255,.16);
+
+    --text:
+        #f4f7fb;
+
+    --muted:
+        #8d97a8;
+
+    --muted-2:
+        #626c7c;
+
+    --accent:
+        #8bdcff;
+
+    --accent-soft:
+        rgba(139,220,255,.12);
+
+    --success:
+        #86efac;
+
+    --danger:
+        #fb7185;
+
+    --warning:
+        #facc15;
+
+    --radius-xl:
+        28px;
+
+    --radius-lg:
+        20px;
+
+    --radius-md:
+        15px;
+
+    --ease:
+        cubic-bezier(.2,.8,.2,1);
+
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*{
+
+    box-sizing:
+        border-box;
+
+    margin:
+        0;
+
+    padding:
+        0;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
+}
+
+
+html{
+
+    scroll-behavior:
+        smooth;
+
+}
+
+
+body{
+
+    min-height:
+        100svh;
+
+    background:
+        var(--bg);
+
+    color:
+        var(--text);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    overflow-x:
+        hidden;
+
+    -webkit-font-smoothing:
+        antialiased;
+
+}
+
+
+button,
+input,
+select,
+textarea{
+
+    font:
+        inherit;
+
+}
+
+
+button{
+
+    color:
+        inherit;
+
+}
+
+
+a{
+
+    color:
+        inherit;
+
+    text-decoration:
+        none;
+
+}
+
+
+[hidden]{
+
+    display:
+        none !important;
+
+}
+
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+#networkCanvas{
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    width:
+        100%;
+
+    height:
+        100%;
+
+    z-index:
+        0;
+
+    pointer-events:
+        none;
+
+}
+
+
+.backgroundGlow{
+
+    position:
+        fixed;
+
+    inset:
+        -35%;
+
+    z-index:
+        1;
+
+    pointer-events:
+        none;
+
+    background:
+
+        radial-gradient(
+            circle at 25% 15%,
+            rgba(56,189,248,.09),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(139,92,246,.075),
+            transparent 30%
+        );
+
+    filter:
+        blur(15px);
+
+    animation:
+        backgroundMove 14s ease-in-out infinite alternate;
+
+}
+
+
+@keyframes backgroundMove{
+
+    from{
+
+        transform:
+            translate(
+                -1%,
+                1%
+            );
+
+    }
+
+    to{
+
+        transform:
+            translate(
+                2%,
+                -2%
+            )
+            scale(1.04);
+
+    }
+
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.app{
+
+    position:
+        relative;
+
+    z-index:
+        5;
+
+    width:
+        min(100%,560px);
+
+    min-height:
+        100svh;
+
+    margin:
+        auto;
+
+    padding:
+        18px
+        15px
+        32px;
+
+}
+
+
+@media(min-width:700px){
+
+    .app{
+
+        padding-top:
+            32px;
+
+    }
+
+}
+
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.topbar{
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    margin-bottom:
+        15px;
+
+}
+
+
+.brand{
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        11px;
+
+}
+
+
+.brandIcon{
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    border:
+        1px solid var(--border-strong);
+
+    border-radius:
+        14px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    background:
+        rgba(255,255,255,.025);
+
+}
+
+
+.brandIcon span{
+
+    font-size:
+        16px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        -2px;
+
+}
+
+
+.brandText strong{
+
+    display:
+        block;
+
+    font-size:
+        15px;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.brandText small{
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+
+}
+
+
+.menuButton{
+
+    width:
+        43px;
+
+    height:
+        43px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(10,13,18,.75);
+
+    cursor:
+        pointer;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    transition:
+        .25s var(--ease);
+
+}
+
+
+.menuButton:hover{
+
+    border-color:
+        var(--border-strong);
+
+    background:
+        rgba(255,255,255,.055);
+
+}
+
+
+.menuButton:active{
+
+    transform:
+        scale(.93);
+
+}
+
+
+.menuDots{
+
+    font-size:
+        21px;
+
+    letter-spacing:
+        3px;
+
+    transform:
+        rotate(90deg);
+
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero{
+
+    text-align:
+        center;
+
+    padding:
+        25px
+        5px
+        25px;
+
+}
+
+
+.logo{
+
+    position:
+        relative;
+
+    width:
+        94px;
+
+    height:
+        94px;
+
+    margin:
+        0 auto 17px;
+
+    border:
+        1px solid var(--border-strong);
+
+    border-radius:
+        30px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    overflow:
+        hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #141922,
+            #030406
+        );
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.4);
+
+}
+
+
+.logo::before{
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        170%;
+
+    height:
+        170%;
+
+    background:
+        conic-gradient(
+            transparent,
+            rgba(139,220,255,.2),
+            transparent 30%
+        );
+
+    animation:
+        logoSpin 7s linear infinite;
+
+}
+
+
+.logo::after{
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        1px;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            145deg,
+            #11151d,
+            #030405
+        );
+
+}
+
+
+@keyframes logoSpin{
+
+    to{
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+.logo span{
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    font-size:
+        35px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        -6px;
+
+}
+
+
+.hero h1{
+
+    font-size:
+        27px;
+
+    letter-spacing:
+        .35em;
+
+    margin-left:
+        .35em;
+
+    font-weight:
+        800;
+
+}
+
+
+.hero p{
+
+    margin-top:
+        6px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        13px;
+
+}
+
+
+.status{
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    margin-top:
+        13px;
+
+    padding:
+        7px
+        11px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.statusDot{
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+    background:
+        var(--success);
+
+    box-shadow:
+        0 0 12px var(--success);
+
+}
+
+
+/* =========================================================
+   PORTAL
+   ========================================================= */
+
+.sectionHeader{
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin:
+        3px
+        4px
+        10px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.portalList{
+
+    display:
+        grid;
+
+    gap:
+        11px;
+
+}
+
+
+.portalButton{
+
+    position:
+        relative;
+
+    width:
+        100%;
+
+    min-height:
+        65px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        19px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(20,24,31,.78),
+            rgba(8,10,14,.88)
+        );
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    padding:
+        0
+        16px;
+
+    overflow:
+        hidden;
+
+    cursor:
+        pointer;
+
+    animation:
+        portalIn .55s var(--ease) both;
+
+    transition:
+        .3s var(--ease);
+
+}
+
+
+.portalButton::before{
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    left:
+        15px;
+
+    top:
+        0;
+
+    width:
+        95px;
+
+    height:
+        1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--accent),
+            transparent
+        );
+
+    opacity:
+        .45;
+
+}
+
+
+.portalButton::after{
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    background:
+        linear-gradient(
+            105deg,
+            transparent,
+            rgba(255,255,255,.045),
+            transparent
+        );
+
+    transform:
+        translateX(-120%);
+
+    transition:
+        .7s;
+
+}
+
+
+.portalButton:hover::after{
+
+    transform:
+        translateX(120%);
+
+}
+
+
+.portalButton:hover{
+
+    transform:
+        translateY(-2px);
+
+    border-color:
+        var(--border-strong);
+
+}
+
+
+.portalButton:active{
+
+    transform:
+        scale(.985);
+
+}
+
+
+@keyframes portalIn{
+
+    from{
+
+        opacity:
+            0;
+
+        transform:
+            translateY(10px);
+
+    }
+
+    to{
+
+        opacity:
+            1;
+
+        transform:
+            none;
+
+    }
+
+}
+
+
+.portalLeft{
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+    min-width:
+        0;
+
+}
+
+
+.portalIcon{
+
+    width:
+        35px;
+
+    height:
+        35px;
+
+    flex:
+        0 0 35px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        11px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    font-size:
+        14px;
+
+}
+
+
+.portalText{
+
+    min-width:
+        0;
+
+    text-align:
+        left;
+
+}
+
+
+.portalName{
+
+    display:
+        block;
+
+    font-size:
+        15px;
+
+    font-weight:
+        700;
+
+    white-space:
+        nowrap;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+.portalSubtitle{
+
+    display:
+        block;
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+
+    margin-top:
+        1px;
+
+}
+
+
+.portalArrow{
+
+    color:
+        var(--muted-2);
+
+    font-size:
+        19px;
+
+    transition:
+        .25s;
+
+}
+
+
+.portalButton:hover .portalArrow{
+
+    color:
+        var(--text);
+
+    transform:
+        translateX(4px);
+
+}
+
+
+.fallback{
+
+    padding:
+        15px;
+
+    border:
+        1px dashed var(--border-strong);
+
+    border-radius:
+        16px;
+
+    color:
+        var(--muted);
+
+    text-align:
+        center;
+
+    font-size:
+        12px;
+
+}
+
+
+/* =========================================================
+   FOOTER SECRET
+   ========================================================= */
+
+.footer{
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    padding-top:
+        20px;
+
+}
+
+
+.secretTrigger{
+
+    border:
+        0;
+
+    background:
+        transparent;
+
+    color:
+        rgba(255,255,255,.15);
+
+    padding:
+        9px
+        12px;
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        .3em;
+
+    cursor:
+        pointer;
+
+    transition:
+        .3s;
+
+}
+
+
+.secretTrigger:hover{
+
+    color:
+        rgba(255,255,255,.4);
+
+}
+
+
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+
+.overlay{
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        50;
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        center;
+
+    background:
+        rgba(2,4,7,.72);
+
+    backdrop-filter:
+        blur(15px);
+
+    -webkit-backdrop-filter:
+        blur(15px);
+
+    opacity:
+        0;
+
+    pointer-events:
+        none;
+
+    transition:
+        .35s;
+
+}
+
+
+.overlay.open{
+
+    opacity:
+        1;
+
+    pointer-events:
+        auto;
+
+}
+
+
+/* Child screens stack above parent screens. */
+#menuOverlay{z-index:50;}
+#calendarOverlay{z-index:60;align-items:stretch;}
+#contentOverlay{z-index:70;}
+#secretOverlay{z-index:80;}
+#onboardingOverlay{z-index:90;}
+#calendarOverlay .modal{width:100%;max-width:none;height:100dvh;max-height:none;border-radius:0;overflow-y:auto;overscroll-behavior:contain;padding-bottom:max(18px,env(safe-area-inset-bottom));}
+#calendarDays,.calendarDay{touch-action:manipulation;}
+.calendarDay{user-select:none;-webkit-tap-highlight-color:transparent;}
+#calendarOverlay .calendarTop{flex-shrink:0;}
+#calendarOverlay .calendarDays{min-height:0;}
+#calendarOverlay .calendarActions{padding-bottom:4px;}
+@media(max-width:699px){
+    #calendarOverlay .modal{padding:14px 12px max(16px,env(safe-area-inset-bottom));}
+    #calendarOverlay .calendarDay{min-height:58px;}
+    #calendarOverlay .calendarActions{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,rgba(7,9,13,.98) 28%);padding-top:18px;}
+}
+
+
+
+.modal{
+
+    width:
+        min(100%,570px);
+
+    max-height:
+        92svh;
+
+    overflow:
+        auto;
+
+    padding:
+        18px
+        17px
+        28px;
+
+    border:
+        1px solid var(--border-strong);
+
+    border-radius:
+        28px
+        28px
+        0
+        0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(20,24,31,.98),
+            rgba(7,9,13,.99)
+        );
+
+    box-shadow:
+        0 -25px 90px rgba(0,0,0,.5);
+
+    transform:
+        translateY(40px);
+
+    transition:
+        .4s var(--ease);
+
+}
+
+
+.overlay.open .modal{
+
+    transform:
+        translateY(0);
+
+}
+
+
+@media(min-width:700px){
+
+    .overlay{
+
+        align-items:
+            center;
+
+    }
+
+    .modal{
+
+        border-radius:
+            28px;
+
+        max-height:
+            88svh;
+
+    }
+
+}
+
+
+.modalHead{
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    gap:
+        12px;
+
+    margin-bottom:
+        17px;
+
+}
+
+
+.modalHead h2{
+
+    font-size:
+        20px;
+
+}
+
+
+.modalHead p{
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+
+    margin-top:
+        2px;
+
+}
+
+
+.closeButton{
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    flex:
+        0 0 38px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    cursor:
+        pointer;
+
+    font-size:
+        20px;
+
+}
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.menuList{
+
+    display:
+        grid;
+
+    gap:
+        9px;
+
+}
+
+
+.menuItem{
+
+    width:
+        100%;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        17px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    padding:
+        14px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    text-align:
+        left;
+
+    cursor:
+        pointer;
+
+    transition:
+        .25s;
+
+}
+
+
+.menuItem:hover{
+
+    border-color:
+        var(--border-strong);
+
+    background:
+        rgba(255,255,255,.05);
+
+}
+
+
+.menuIcon{
+
+    width:
+        41px;
+
+    height:
+        41px;
+
+    flex:
+        0 0 41px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        13px;
+
+    background:
+        rgba(255,255,255,.03);
+
+}
+
+
+.menuText b{
+
+    display:
+        block;
+
+    font-size:
+        13px;
+
+}
+
+
+.menuText span{
+
+    display:
+        block;
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+
+    margin-top:
+        2px;
+
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.formGrid{
+
+    display:
+        grid;
+
+    gap:
+        13px;
+
+}
+
+
+.field{
+
+    display:
+        grid;
+
+    gap:
+        6px;
+
+}
+
+
+.field label{
+
+    color:
+        #bbc3cf;
+
+    font-size:
+        11px;
+
+}
+
+
+.field input,
+.field select,
+.field textarea{
+
+    width:
+        100%;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    padding:
+        13px
+        14px;
+
+    outline:
+        none;
+
+    background:
+        #0b0e13;
+
+    color:
+        var(--text);
+
+}
+
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+
+    border-color:
+        rgba(139,220,255,.6);
+
+    box-shadow:
+        0 0 0 3px rgba(139,220,255,.07);
+
+}
+
+
+.row{
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:
+        9px;
+
+}
+
+
+.choiceGrid{
+
+    display:
+        grid;
+
+    gap:
+        8px;
+
+}
+
+
+.choice{
+
+    width:
+        100%;
+
+    padding:
+        13px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    text-align:
+        left;
+
+    cursor:
+        pointer;
+
+    transition:
+        .25s;
+
+}
+
+
+.choice:hover{
+
+    border-color:
+        var(--border-strong);
+
+}
+
+
+.choice.active{
+
+    border-color:
+        rgba(139,220,255,.65);
+
+    background:
+        var(--accent-soft);
+
+}
+
+
+.note{
+
+    padding:
+        12px
+        13px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+
+}
+
+
+.actions{
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:
+        9px;
+
+    margin-top:
+        15px;
+
+}
+
+
+.primary,
+.secondary{
+
+    width:
+        100%;
+
+    min-height:
+        47px;
+
+    border-radius:
+        15px;
+
+    cursor:
+        pointer;
+
+    font-weight:
+        750;
+
+}
+
+
+.primary{
+
+    border:
+        0;
+
+    background:
+        #eef2ff;
+
+    color:
+        #080b11;
+
+}
+
+
+.secondary{
+
+    border:
+        1px solid var(--border);
+
+    background:
+        rgba(255,255,255,.035);
+
+}
+
+
+/* =========================================================
+   SECRET
+   ========================================================= */
+
+.secretModal{
+
+    background:
+
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(139,220,255,.1),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            180deg,
+            #0d1118,
+            #05070a
+        );
+
+}
+
+
+.secretContent{
+
+    text-align:
+        center;
+
+    padding:
+        7px
+        3px
+        4px;
+
+}
+
+
+.secretOrb{
+
+    position:
+        relative;
+
+    width:
+        84px;
+
+    height:
+        84px;
+
+    margin:
+        0 auto 18px;
+
+    border:
+        1px solid rgba(139,220,255,.2);
+
+    border-radius:
+        50%;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+}
+
+
+.secretOrb::before{
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        8px;
+
+    border:
+        1px dashed rgba(139,220,255,.18);
+
+    border-radius:
+        50%;
+
+    animation:
+        spin 8s linear infinite;
+
+}
+
+
+.secretOrb::after{
+
+    content:
+        "";
+
+    width:
+        7px;
+
+    height:
+        7px;
+
+    border-radius:
+        50%;
+
+    background:
+        var(--accent);
+
+    box-shadow:
+        0 0 20px var(--accent);
+
+    animation:
+        pulse 1.5s ease-in-out infinite;
+
+}
+
+
+@keyframes spin{
+
+    to{
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+@keyframes pulse{
+
+    50%{
+
+        transform:
+            scale(1.7);
+
+        opacity:
+            .5;
+
+    }
+
+}
+
+
+.secretContent h2{
+
+    font-size:
+        21px;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.secretContent p{
+
+    margin:
+        5px
+        0
+        18px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+
+}
+
+
+.secretInput{
+
+    width:
+        100%;
+
+    padding:
+        16px;
+
+    border:
+        1px solid var(--border-strong);
+
+    border-radius:
+        15px;
+
+    background:
+        #080b0f;
+
+    color:
+        var(--text);
+
+    text-align:
+        center;
+
+    letter-spacing:
+        .32em;
+
+    font-size:
+        19px;
+
+    outline:
+        none;
+
+}
+
+
+.secretInput:focus{
+
+    border-color:
+        rgba(139,220,255,.65);
+
+    box-shadow:
+        0 0 0 4px rgba(139,220,255,.07);
+
+}
+
+
+.secretSubmit{
+
+    margin-top:
+        10px;
+
+}
+
+
+.secretStatus{
+
+    min-height:
+        21px;
+
+    margin-top:
+        10px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+
+}
+
+
+.shake{
+
+    animation:
+        shake .38s ease;
+
+}
+
+
+@keyframes shake{
+
+    20%,
+    60%{
+
+        transform:
+            translateX(-6px);
+
+    }
+
+    40%,
+    80%{
+
+        transform:
+            translateX(6px);
+
+    }
+
+}
+
+
+.successMark{
+
+    width:
+        58px;
+
+    height:
+        58px;
+
+    margin:
+        4px
+        auto
+        15px;
+
+    border:
+        1px solid rgba(134,239,172,.35);
+
+    border-radius:
+        50%;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    color:
+        var(--success);
+
+    font-size:
+        27px;
+
+    animation:
+        successPop .5s var(--ease);
+
+}
+
+
+@keyframes successPop{
+
+    from{
+
+        opacity:
+            0;
+
+        transform:
+            scale(.5);
+
+    }
+
+    to{
+
+        opacity:
+            1;
+
+        transform:
+            scale(1);
+
+    }
+
+}
+
+
+/* =========================================================
+   ONBOARDING
+   ========================================================= */
+
+.stepbar{
+
+    display:
+        flex;
+
+    gap:
+        5px;
+
+    margin-bottom:
+        18px;
+
+}
+
+
+.stepbar i{
+
+    flex:
+        1;
+
+    height:
+        3px;
+
+    border-radius:
+        99px;
+
+    background:
+        rgba(255,255,255,.08);
+
+}
+
+
+.stepbar i.active{
+
+    background:
+        var(--accent);
+
+}
+
+
+.question{
+
+    display:
+        none;
+
+}
+
+
+.question.active{
+
+    display:
+        block;
+
+    animation:
+        questionIn .35s var(--ease);
+
+}
+
+
+@keyframes questionIn{
+
+    from{
+
+        opacity:
+            0;
+
+        transform:
+            translateY(9px);
+
+    }
+
+    to{
+
+        opacity:
+            1;
+
+        transform:
+            none;
+
+    }
+
+}
+
+
+/* =========================================================
+   CALENDAR
+   ========================================================= */
+
+.calendarTop{
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin-bottom:
+        13px;
+
+}
+
+
+.calendarTitle strong{
+
+    display:
+        block;
+
+    font-size:
+        20px;
+
+}
+
+
+.calendarTitle small{
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+
+}
+
+
+.monthButtons{
+
+    display:
+        flex;
+
+    gap:
+        5px;
+
+}
+
+
+.monthButtons button{
+
+    width:
+        37px;
+
+    height:
+        37px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        11px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    cursor:
+        pointer;
+
+}
+
+
+.stats{
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:
+        8px;
+
+    margin-bottom:
+        14px;
+
+}
+
+
+.stat{
+
+    padding:
+        11px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(255,255,255,.025);
+
+}
+
+
+.stat b{
+
+    display:
+        block;
+
+    font-size:
+        17px;
+
+}
+
+
+.stat span{
+
+    color:
+        var(--muted);
+
+    font-size:
+        8px;
+
+    letter-spacing:
+        .06em;
+
+}
+
+
+.week{
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(7,1fr);
+
+    gap:
+        4px;
+
+    margin-bottom:
+        5px;
+
+}
+
+
+.week span{
+
+    text-align:
+        center;
+
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+
+    padding:
+        3px;
+
+}
+
+
+.calendarDays{
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(7,1fr);
+
+    gap:
+        4px;
+
+}
+
+
+.calendarDay{
+
+    position:
+        relative;
+
+    min-height:
+        53px;
+
+    padding:
+        6px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        11px;
+
+    background:
+        rgba(255,255,255,.018);
+
+    text-align:
+        left;
+
+    cursor:
+        pointer;
+
+}
+
+
+.calendarDay.muted{
+
+    opacity:
+        .25;
+
+}
+
+
+.calendarDay.today{
+
+    border-color:
+        rgba(139,220,255,.7);
+
+}
+
+
+.calendarDay.work{
+
+    background:
+        rgba(139,220,255,.05);
+
+}
+
+
+.calendarDay.off{
+
+    background:
+        rgba(255,255,255,.018);
+
+}
+
+
+.calendarDay.leave{
+
+    background:
+        rgba(251,113,133,.08);
+
+    border-color:
+        rgba(251,113,133,.28);
+
+}
+
+
+.calendarDay b{
+
+    font-size:
+        11px;
+
+}
+
+
+.calendarDay small{
+
+    display:
+        block;
+
+    margin-top:
+        4px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        7px;
+
+    white-space:
+        nowrap;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+.otDot{
+
+    position:
+        absolute;
+
+    top:
+        6px;
+
+    right:
+        6px;
+
+    width:
+        5px;
+
+    height:
+        5px;
+
+    border-radius:
+        50%;
+
+    background:
+        var(--warning);
+
+}
+
+
+.calendarActions{
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:
+        9px;
+
+    margin-top:
+        14px;
+
+}
+
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+.historyList{
+
+    display:
+        grid;
+
+    gap:
+        8px;
+
+}
+
+
+.historyItem{
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        10px;
+
+    padding:
+        12px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        13px;
+
+    background:
+        rgba(255,255,255,.02);
+
+}
+
+
+.historyItem b{
+
+    display:
+        block;
+
+    font-size:
+        11px;
+
+}
+
+
+.historyItem small{
+
+    display:
+        block;
+
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+
+    margin-top:
+        2px;
+
+}
+
+
+/* =========================================================
+   HELP
+   ========================================================= */
+
+.help{
+
+    display:
+        grid;
+
+    gap:
+        11px;
+
+}
+
+
+.helpSection{
+
+    padding:
+        13px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(255,255,255,.02);
+
+}
+
+
+.helpSection h3{
+
+    font-size:
+        13px;
+
+    margin-bottom:
+        5px;
+
+}
+
+
+.helpSection p,
+.helpSection li{
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+
+}
+
+
+.helpSection ol{
+
+    padding-left:
+        17px;
+
+    display:
+        grid;
+
+    gap:
+        4px;
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast{
+
+    position:
+        fixed;
+
+    left:
+        50%;
+
+    bottom:
+        22px;
+
+    z-index:
+        100;
+
+    max-width:
+        calc(100% - 30px);
+
+    padding:
+        10px
+        14px;
+
+    border-radius:
+        12px;
+
+    background:
+        #eef2ff;
+
+    color:
+        #080b11;
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+
+    transform:
+        translate(
+            -50%,
+            20px
+        );
+
+    opacity:
+        0;
+
+    pointer-events:
+        none;
+
+    transition:
+        .3s;
+
+}
+
+
+.toast.show{
+
+    opacity:
+        1;
+
+    transform:
+        translate(
+            -50%,
+            0
+        );
+
+}
+
+
+/* =========================================================
+   LIGHTWEIGHT MODE
+   ========================================================= */
+
+body.lightweight .backgroundGlow,
+body.lightweight #networkCanvas{
+
+    display:
+        none;
+
+}
+
+
+body.lightweight *{
+
+    animation-duration:
+        .001ms !important;
+
+    transition-duration:
+        .001ms !important;
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:390px){
+
+    .app{
+
+        padding-left:
+            11px;
+
+        padding-right:
+            11px;
+
+    }
+
+    .hero h1{
+
+        font-size:
+            23px;
+
+    }
+
+    .portalButton{
+
+        min-height:
+            61px;
+
+    }
+
+    .calendarDay{
+
+        min-height:
+            48px;
+
+    }
+
+}
+
+
+@media(prefers-reduced-motion:reduce){
+
+    *{
+
+        animation-duration:
+            .001ms !important;
+
+        transition-duration:
+            .001ms !important;
+
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<canvas id="networkCanvas"></canvas>
+
+<div class="backgroundGlow"></div>
+
+
+<main class="app">
+
+
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brandIcon">
+                <span>R↗</span>
+            </div>
+
+            <div class="brandText">
+
+                <strong>RNG_NET</strong>
+
+                <small>
+                    Personal space
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="menuButton"
+            id="menuButton"
+            type="button"
+            aria-label="Buka menu"
+        >
+
+            <span class="menuDots">
+                •••
+            </span>
+
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <section class="hero">
+
+        <div class="logo">
+
+            <span>
+                R↗
+            </span>
+
+        </div>
+
+
+        <h1>
+            RNG_NET
+        </h1>
+
+
+        <p>
+            Personal space · jaringan tersinkronisasi
+        </p>
+
+
+        <span class="status">
+
+            <i class="statusDot"></i>
+
+            <span id="systemStatus">
+                LOCAL STORAGE READY
+            </span>
+
+        </span>
+
+    </section>
+
+
+    <!-- =====================================================
+         PORTAL BUTTONS
+         ===================================================== -->
+
+    <div class="sectionHeader">
+
+        <span>
+            Portal
+        </span>
+
+        <span id="buttonCount"></span>
+
+    </div>
+
+
+    <section
+        class="portalList"
+        id="portalList"
+        aria-label="Daftar portal"
+    ></section>
+
+
+    <p
+        class="fallback"
+        id="portalFallback"
+        hidden
+    >
+        Konfigurasi tombol belum dimuat.
+    </p>
+
+
+    <!-- =====================================================
+         SECRET TRIGGER
+         ===================================================== -->
+
+    <footer class="footer">
+
+        <button
+            class="secretTrigger"
+            id="secretTrigger"
+            type="button"
+        >
+            RNG NETWORK
+        </button>
+
+    </footer>
+
+
+</main>
+
+
+<!-- =========================================================
+     MENU
+     ========================================================= -->
+
+<div
+    class="overlay"
+    id="menuOverlay"
+    aria-hidden="true"
+>
+
+    <div class="modal">
+
+        <div class="modalHead">
+
+            <div>
+
+                <h2>
+                    Menu
+                </h2>
+
+                <p>
+                    Pengaturan ruang pribadi
+                </p>
+
+            </div>
+
+
+            <button
+                class="closeButton"
+                type="button"
+                data-close="menuOverlay"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="menuList">
+
+
+            <button
+                class="menuItem"
+                id="openCalendar"
+                type="button"
+            >
+
+                <div class="menuIcon">
+                    ▦
+                </div>
+
+                <div class="menuText">
+
+                    <b>
+                        Kalender
+                    </b>
+
+                    <span>
+                        Jadwal, kerja, libur, lembur & history
+                    </span>
+
+                </div>
+
+            </button>
+
+
+            <button
+                class="menuItem"
+                id="openProfile"
+                type="button"
+            >
+
+                <div class="menuIcon">
+                    ◎
+                </div>
+
+                <div class="menuText">
+
+                    <b>
+                        Profil & pengaturan
+                    </b>
+
+                    <span>
+                        Ubah pengaturan kalender
+                    </span>
+
+                </div>
+
+            </button>
+
+
+            <button
+                class="menuItem"
+                id="openHelp"
+                type="button"
+            >
+
+                <div class="menuIcon">
+                    ?
+                </div>
+
+                <div class="menuText">
+
+                    <b>
+                        Tata cara penggunaan
+                    </b>
+
+                    <span>
+                        Panduan singkat fitur
+                    </span>
+
+                </div>
+
+            </button>
+
+
+            <button
+                class="menuItem"
+                id="toggleLightweight"
+                type="button"
+            >
+
+                <div class="menuIcon">
+                    ◐
+                </div>
+
+                <div class="menuText">
+
+                    <b>
+                        Tampilan ringan
+                    </b>
+
+                    <span>
+                        Kurangi animasi untuk perangkat lemah
+                    </span>
+
+                </div>
+
+            </button>
+
+
+            <button
+                class="menuItem"
+                id="resetData"
+                type="button"
+            >
+
+                <div class="menuIcon">
+                    ↺
+                </div>
+
+                <div class="menuText">
+
+                    <b>
+                        Reset data lokal
+                    </b>
+
+                    <span>
+                        Hapus profil, kalender & history
+                    </span>
+
+                </div>
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     SECRET ACCESS
+     ========================================================= -->
+
+<div
+    class="overlay"
+    id="secretOverlay"
+    aria-hidden="true"
+>
+
+    <div class="modal secretModal">
+
+        <div class="modalHead">
+
+            <div>
+
+                <h2>
+                    Akses
+                </h2>
+
+                <p>
+                    Verifikasi tambahan
+                </p>
+
+            </div>
+
+
+            <button
+                class="closeButton"
+                type="button"
+                data-close="secretOverlay"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="secretContent"
+            id="secretContent"
+        >
+
+            <div class="secretOrb"></div>
+
+
+            <h2 id="secretTitle">
+                PRIVATE ACCESS
+            </h2>
+
+
+            <p id="secretDescription">
+                Masukkan kode akses untuk melanjutkan.
+            </p>
+
+
+            <form
+                id="secretForm"
+                autocomplete="off"
+            >
+
+                <input
+                    class="secretInput"
+                    id="secretInput"
+                    type="password"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    maxlength="32"
+                    placeholder="••••••"
+                >
+
+
+                <button
+                    class="primary secretSubmit"
+                    id="secretSubmit"
+                    type="submit"
+                >
+                    Lanjut
+                </button>
+
+            </form>
+
+
+            <div
+                class="secretStatus"
+                id="secretStatus"
+                aria-live="polite"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CONTENT MODAL
+     ========================================================= -->
+
+<div
+    class="overlay"
+    id="contentOverlay"
+    aria-hidden="true"
+>
+
+    <div class="modal">
+
+        <div class="modalHead">
+
+            <div>
+
+                <h2 id="contentTitle">
+                    Informasi
+                </h2>
+
+                <p id="contentSubtitle">
+                    RNG_NET
+                </p>
+
+            </div>
+
+
+            <button
+                class="closeButton"
+                type="button"
+                data-close="contentOverlay"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="contentBody"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ONBOARDING
+     ========================================================= -->
+
+<div
+    class="overlay"
+    id="onboardingOverlay"
+    aria-hidden="true"
+>
+
+    <div class="modal">
+
+        <div class="modalHead">
+
+            <div>
+
+                <h2>
+                    Siapkan kalender
+                </h2>
+
+                <p>
+                    Pengaturan disimpan di browser ini.
+                </p>
+
+            </div>
+
+
+            <button
+                class="closeButton"
+                type="button"
+                data-close="onboardingOverlay"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="stepbar"
+            id="stepbar"
+        ></div>
+
+
+        <form
+            id="onboardingForm"
+            autocomplete="off"
+        >
+
+
+            <!-- STEP 1 -->
+
+            <div
+                class="question active"
+                data-step="1"
+            >
+
+                <div class="formGrid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Nama panggilan
+                        </label>
+
+                        <input
+                            name="name"
+                            maxlength="40"
+                            required
+                            placeholder="Contoh: Asep"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Umur
+                        </label>
+
+                        <input
+                            name="age"
+                            type="number"
+                            min="1"
+                            max="120"
+                            required
+                            placeholder="19"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Status
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="status"
+                                data-value="sekolah"
+                            >
+                                Sekolah
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="status"
+                                data-value="kerja"
+                            >
+                                Kerja
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="status"
+                                data-value="lain"
+                            >
+                                Lainnya / tidak tetap
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="schoolField"
+                        hidden
+                    >
+
+                        <label>
+                            Nama sekolah
+                        </label>
+
+                        <input
+                            name="school"
+                            maxlength="80"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="companyField"
+                        hidden
+                    >
+
+                        <label>
+                            Nama PT / tempat kerja
+                        </label>
+
+                        <input
+                            name="company"
+                            maxlength="80"
+                        >
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 2 -->
+
+            <div
+                class="question"
+                data-step="2"
+            >
+
+                <div class="formGrid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Apakah ada jam kerja?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="hasHours"
+                                data-value="yes"
+                            >
+                                Ya, ada jam kerja
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="hasHours"
+                                data-value="no"
+                            >
+                                Tidak teratur / free line
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="shiftField"
+                        hidden
+                    >
+
+                        <label>
+                            Apakah menggunakan shift?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="hasShift"
+                                data-value="yes"
+                            >
+                                Ya
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="hasShift"
+                                data-value="no"
+                            >
+                                Tidak
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="shiftCountField"
+                        hidden
+                    >
+
+                        <label>
+                            Ada berapa shift?
+                        </label>
+
+                        <input
+                            name="shiftCount"
+                            type="number"
+                            min="1"
+                            max="10"
+                            placeholder="2"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="shiftWriteField"
+                        hidden
+                    >
+
+                        <label>
+                            Jadwal shift mau ditulis?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="writeShift"
+                                data-value="yes"
+                            >
+                                Ya, atur jam shift
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="writeShift"
+                                data-value="no"
+                            >
+                                Tidak, nanti manual
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Pengisian kalender
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="calendarMode"
+                                data-value="auto"
+                            >
+                                Otomatis
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="calendarMode"
+                                data-value="manual"
+                            >
+                                Manual
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 3 -->
+
+            <div
+                class="question"
+                data-step="3"
+            >
+
+                <div class="formGrid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Jam kerja utama
+                        </label>
+
+                        <div class="row">
+
+                            <input
+                                name="start"
+                                type="time"
+                            >
+
+                            <input
+                                name="end"
+                                type="time"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Sabtu berbeda?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="satDifferent"
+                                data-value="yes"
+                            >
+                                Ya
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="satDifferent"
+                                data-value="no"
+                            >
+                                Tidak
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="satHoursField"
+                        hidden
+                    >
+
+                        <label>
+                            Jam kerja Sabtu
+                        </label>
+
+                        <div class="row">
+
+                            <input
+                                name="satStart"
+                                type="time"
+                            >
+
+                            <input
+                                name="satEnd"
+                                type="time"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Minggu kerja?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="sundayWork"
+                                data-value="yes"
+                            >
+                                Ya
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="sundayWork"
+                                data-value="no"
+                            >
+                                Tidak
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="note">
+
+                        Jika jam kerja tidak teratur,
+                        bagian jam ini boleh dikosongkan.
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 4 -->
+
+            <div
+                class="question"
+                data-step="4"
+            >
+
+                <div class="formGrid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Apakah ada lembur?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="hasOvertime"
+                                data-value="yes"
+                            >
+                                Ya
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="hasOvertime"
+                                data-value="no"
+                            >
+                                Tidak
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="overtimeModeField"
+                        hidden
+                    >
+
+                        <label>
+                            Sistem lembur
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="overtimeMode"
+                                data-value="fixed"
+                            >
+                                Jam mati / tarif tetap
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="overtimeMode"
+                                data-value="live"
+                            >
+                                Jam hidup / berdasarkan durasi
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="overtimeRateField"
+                        hidden
+                    >
+
+                        <label>
+                            Tarif lembur
+                        </label>
+
+                        <div class="row">
+
+                            <input
+                                name="overtime30"
+                                type="number"
+                                min="0"
+                                placeholder="30 menit"
+                            >
+
+                            <input
+                                name="overtime60"
+                                type="number"
+                                min="0"
+                                placeholder="1 jam"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 5 -->
+
+            <div
+                class="question"
+                data-step="5"
+            >
+
+                <div class="formGrid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Mau hitung gaji?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="salary"
+                                data-value="yes"
+                            >
+                                Ya
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="salary"
+                                data-value="no"
+                            >
+                                Tidak
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="salaryField"
+                        hidden
+                    >
+
+                        <label>
+                            Dasar gaji
+                        </label>
+
+                        <select name="salaryBase">
+
+                            <option value="day">
+                                Per hari
+                            </option>
+
+                            <option value="hour">
+                                Per jam
+                            </option>
+
+                            <option value="month">
+                                Per bulan
+                            </option>
+
+                        </select>
+
+
+                        <input
+                            name="salaryAmount"
+                            type="number"
+                            min="0"
+                            placeholder="Nominal"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Hitung hari libur?
+                        </label>
+
+
+                        <div class="choiceGrid">
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="countOff"
+                                data-value="yes"
+                            >
+                                Ya, tampilkan
+                            </button>
+
+
+                            <button
+                                class="choice"
+                                type="button"
+                                data-choice="countOff"
+                                data-value="no"
+                            >
+                                Tidak
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="note">
+
+                        Semua pengaturan masih bisa diedit
+                        setelah kalender dibuat.
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="secondary"
+                    id="onboardingBack"
+                    type="button"
+                >
+                    Kembali
+                </button>
+
+
+                <button
+                    class="primary"
+                    id="onboardingNext"
+                    type="button"
+                >
+                    Lanjut
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CALENDAR
+     ========================================================= -->
+
+<div
+    class="overlay"
+    id="calendarOverlay"
+    aria-hidden="true"
+>
+
+    <div class="modal">
+
+        <div class="modalHead">
+
+            <div>
+
+                <h2>
+                    Kalender
+                </h2>
+
+                <p id="calendarUser">
+                    Jadwal pribadi
+                </p>
+
+            </div>
+
+
+            <button
+                class="closeButton"
+                type="button"
+                data-close="calendarOverlay"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="calendarTop">
+
+            <div class="calendarTitle">
+
+                <strong id="monthLabel">
+                    -
+                </strong>
+
+                <small id="yearLabel">
+                    -
+                </small>
+
+            </div>
+
+
+            <div class="monthButtons">
+
+                <button
+                    id="previousMonth"
+                    type="button"
+                >
+                    ‹
+                </button>
+
+
+                <button
+                    id="currentMonth"
+                    type="button"
+                >
+                    •
+                </button>
+
+
+                <button
+                    id="nextMonth"
+                    type="button"
+                >
+                    ›
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <b id="workCount">
+                    0
+                </b>
+
+                <span>
+                    HARI KERJA
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <b id="offCount">
+                    0
+                </b>
+
+                <span>
+                    LIBUR / OFF
+                </span>
+
+            </div>
+
+
+            <div class="stat">
+
+                <b id="overtimeCount">
+                    0j
+                </b>
+
+                <span>
+                    LEMBUR
+                </span>
+
+            </div>
+
+            <div class="stat">
+                <b id="salaryEstimate">—</b>
+                <span>ESTIMASI GAJI</span>
+            </div>
+
+        </div>
+
+
+        <div class="week">
+
+            <span>
+                Min
+            </span>
+
+            <span>
+                Sen
+            </span>
+
+            <span>
+                Sel
+            </span>
+
+            <span>
+                Rab
+            </span>
+
+            <span>
+                Kam
+            </span>
+
+            <span>
+                Jum
+            </span>
+
+            <span>
+                Sab
+            </span>
+
+        </div>
+
+
+        <div
+            class="calendarDays"
+            id="calendarDays"
+        ></div>
+
+
+        <div class="calendarActions">
+
+            <button
+                class="secondary"
+                id="calendarSettings"
+                type="button"
+            >
+                Pengaturan
+            </button>
+
+
+            <button
+                class="secondary"
+                id="calendarHistory"
+                type="button"
+            >
+                History
+            </button>
+
+
+            <button
+                class="secondary"
+                id="calendarHoliday"
+                type="button"
+            >
+                Atur libur
+            </button>
+
+
+            <button
+                class="secondary"
+                id="calendarToday"
+                type="button"
+            >
+                Hari ini
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+     ========================================================= -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<!-- =========================================================
+     EXTERNAL DATA & SCRIPTS
+     ========================================================= -->
+
+<!-- Config & Settings -->
+<script src="config/passwords.js"></script>
+<script src="config/buttons.js"></script>
+<script src="config/messages.js"></script>
+<script src="config/settings.js"></script>
+
+<!-- Assets & Theme -->
+<script src="assets/theme.js"></script>
+
+<!-- Calendar Engine -->
+<script src="calendar/calendar-engine.js"></script>
+
+
+<script>
+
+"use strict";
+
+
+/* =========================================================
+   RNG_NET CORE
+   ========================================================= */
+
+const $ = (
+    selector,
+    root = document
+) => root.querySelector(selector);
+
+
+const $$ = (
+    selector,
+    root = document
+) => [
+    ...root.querySelectorAll(selector)
+];
+
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+const STORAGE = {
+
+    profile:
+        "rng_profile",
+
+    calendar:
+        "rng_calendar",
+
+    history:
+        "rng_history",
+
+    appearance:
+        "rng_appearance"
+
+};
+
+
+/* =========================================================
+   GLOBAL STATE
+   ========================================================= */
+
+const state = {
+
+    secretStage:
+        "main",
+
+    activeAccess:
+        null,
+
+    onboardingStep:
+        1,
+
+    onboardingData:
+        {},
+
+    calendarDate:
+        new Date()
+
+};
+
+
+/* =========================================================
+   BASIC STORAGE HELPERS
+   ========================================================= */
+
+function readJSON(
+    key,
+    fallback
+){
+
+    try{
+
+        const raw =
+            localStorage.getItem(key);
+
+        if(!raw){
+
+            return fallback;
+
+        }
+
+        return JSON.parse(raw);
+
+    }catch(error){
+
+        return fallback;
+
+    }
+
+}
+
+
+function writeJSON(
+    key,
+    value
+){
+
+    try{
+
+        localStorage.setItem(
+            key,
+            JSON.stringify(value)
+        );
+
+        return true;
+
+    }catch(error){
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer = null;
+
+
+function showToast(
+    message
+){
+
+    const toast =
+        $("#toast");
+
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        toastTimer
+    );
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2200
+        );
+
+}
+
+
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+
+function openOverlay(
+    id
+){
+
+    const overlay =
+        document.getElementById(
+            id
+        );
+
+    if(!overlay){
+
+        return;
+
+    }
+
+    overlay.classList.add(
+        "open"
+    );
+
+    overlay.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+function closeOverlay(
+    id
+){
+
+    const overlay =
+        document.getElementById(
+            id
+        );
+
+    if(!overlay){
+
+        return;
+
+    }
+
+    overlay.classList.remove(
+        "open"
+    );
+
+    overlay.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    if(
+        !$$(
+            ".overlay.open"
+        ).length
+    ){
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+}
+
+
+$$(
+    "[data-close]"
+).forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                closeOverlay(
+                    button.dataset.close
+                );
+
+            }
+        );
+
+    }
+);
+
+
+$$(
+    ".overlay"
+).forEach(
+    overlay => {
+
+        overlay.addEventListener(
+            "click",
+            event => {
+
+                if(
+                    event.target ===
+                    overlay
+                ){
+
+                    closeOverlay(
+                        overlay.id
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key ===
+            "Escape"
+        ){
+
+            $$(".overlay.open")
+                .forEach(
+                    overlay =>
+                        closeOverlay(
+                            overlay.id
+                        )
+                );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   HTML ESCAPE
+   ========================================================= */
+
+function escapeHTML(
+    value
+){
+
+    return String(
+        value ?? ""
+    ).replace(
+        /[&<>"']/g,
+        character => {
+
+            const map = {
+
+                "&":
+                    "&amp;",
+
+                "<":
+                    "&lt;",
+
+                ">":
+                    "&gt;",
+
+                '"':
+                    "&quot;",
+
+                "'":
+                    "&#039;"
+
+            };
+
+            return map[
+                character
+            ];
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BACKGROUND PARTICLES
+   ========================================================= */
+
+const canvas =
+    $("#networkCanvas");
+
+const context =
+    canvas.getContext(
+        "2d"
+    );
+
+
+let particles =
+    [];
+
+
+function resizeCanvas(){
+
+    const ratio =
+        Math.min(
+            window.devicePixelRatio || 1,
+            1.5
+        );
+
+    const width =
+        window.innerWidth;
+
+    const height =
+        window.innerHeight;
+
+    canvas.width =
+        width * ratio;
+
+    canvas.height =
+        height * ratio;
+
+    canvas.style.width =
+        width + "px";
+
+    canvas.style.height =
+        height + "px";
+
+    context.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+    );
+
+
+    const count =
+        Math.min(
+            55,
+            Math.max(
+                18,
+                Math.floor(
+                    width * height / 18000
+                )
+            )
+        );
+
+
+    particles =
+        Array.from(
+            {
+                length:
+                    count
+            },
+            () => ({
+
+                x:
+                    Math.random()
+                    * width,
+
+                y:
+                    Math.random()
+                    * height,
+
+                vx:
+                    (Math.random()-.5)
+                    * .28,
+
+                vy:
+                    (Math.random()-.5)
+                    * .28,
+
+                radius:
+                    Math.random()
+                    * 1.5
+                    + .5
+
+            })
+        );
+
+}
+
+
+function animateBackground(){
+
+    const width =
+        window.innerWidth;
+
+    const height =
+        window.innerHeight;
+
+
+    context.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    for(
+        const particle
+        of particles
+    ){
+
+        particle.x +=
+            particle.vx;
+
+        particle.y +=
+            particle.vy;
+
+
+        if(
+            particle.x < 0 ||
+            particle.x > width
+        ){
+
+            particle.vx *=
+                -1;
+
+        }
+
+
+        if(
+            particle.y < 0 ||
+            particle.y > height
+        ){
+
+            particle.vy *=
+                -1;
+
+        }
+
+
+        context.beginPath();
+
+        context.arc(
+            particle.x,
+            particle.y,
+            particle.radius,
+            0,
+            Math.PI * 2
+        );
+
+        context.fillStyle =
+            "rgba(139,220,255,.32)";
+
+        context.fill();
+
+    }
+
+
+    for(
+        let i = 0;
+        i < particles.length;
+        i++
+    ){
+
+        for(
+            let j = i + 1;
+            j < particles.length;
+            j++
+        ){
+
+            const a =
+                particles[i];
+
+            const b =
+                particles[j];
+
+
+            const dx =
+                a.x - b.x;
+
+            const dy =
+                a.y - b.y;
+
+            const distance =
+                Math.hypot(
+                    dx,
+                    dy
+                );
+
+
+            if(
+                distance < 135
+            ){
+
+                context.beginPath();
+
+                context.moveTo(
+                    a.x,
+                    a.y
+                );
+
+                context.lineTo(
+                    b.x,
+                    b.y
+                );
+
+                context.strokeStyle =
+                    `rgba(
+                        139,
+                        220,
+                        255,
+                        ${.13 - distance / 1300}
+                    )`;
+
+                context.lineWidth =
+                    .6;
+
+                context.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animateBackground
+    );
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+resizeCanvas();
+
+animateBackground();
+
+
+/* =========================================================
+   BUTTON CONFIG
+   ========================================================= */
+
+function getButtonConfig(){
+
+    if(
+        typeof BUTTONS_DATA !==
+        "undefined"
+    ){
+
+        return BUTTONS_DATA;
+
+    }
+
+
+    if(
+        typeof BUTTON_CONFIG !==
+        "undefined"
+    ){
+
+        return BUTTON_CONFIG;
+
+    }
+
+
+    if(
+        typeof BUTTONS !==
+        "undefined"
+    ){
+
+        return BUTTONS;
+
+    }
+
+
+    return null;
+
+}
+
+
+function normalizeButtons(
+    data
+){
+
+    let list = [];
+
+
+    if(
+        Array.isArray(data)
+    ){
+
+        list =
+            data;
+
+    }else if(
+        Array.isArray(
+            data?.buttons
+        )
+    ){
+
+        list =
+            data.buttons;
+
+    }else if(
+        Array.isArray(
+            data?.items
+        )
+    ){
+
+        list =
+            data.items;
+
+    }else if(
+        Array.isArray(
+            data?.links
+        )
+    ){
+
+        list =
+            data.links;
+
+    }
+
+
+    return list
+        .map(
+            (
+                item,
+                index
+            ) => {
+
+                if(
+                    typeof item ===
+                    "string"
+                ){
+
+                    return {
+
+                        name:
+                            "Portal " +
+                            (index + 1),
+
+                        subtitle:
+                            "",
+
+                        icon:
+                            "◇",
+
+                        type:
+                            "link",
+
+                        value:
+                            item
+
+                    };
+
+                }
+
+
+                return {
+
+                    name:
+                        item.name ||
+                        item.title ||
+                        (
+                            "Portal " +
+                            (index + 1)
+                        ),
+
+                    subtitle:
+                        item.subtitle ||
+                        item.description ||
+                        "",
+
+                    icon:
+                        item.icon ||
+                        "◇",
+
+                    type:
+                        (
+                            item.type ||
+                            item.kind ||
+                            "link"
+                        ).toLowerCase(),
+
+                    value:
+                        item.url ||
+                        item.link ||
+                        item.href ||
+                        item.value ||
+                        item.id ||
+                        ""
+
+                };
+
+            }
+        )
+        .filter(
+            item =>
+                item.value
+        );
+
+}
+
+
+function renderButtons(){
+
+    const listContainer =
+        $("#portalList");
+
+    const fallback =
+        $("#portalFallback");
+
+    const data =
+        getButtonConfig();
+
+    const buttons =
+        normalizeButtons(
+            data
+        );
+
+
+    listContainer.innerHTML =
+        "";
+
+
+    if(
+        !buttons.length
+    ){
+
+        fallback.hidden =
+            false;
+
+        $("#buttonCount")
+            .textContent =
+            "";
+
+        return;
+
+    }
+
+
+    fallback.hidden =
+        true;
+
+
+    $("#buttonCount")
+        .textContent =
+        buttons.length +
+        " ITEM";
+
+
+    buttons.forEach(
+        (
+            item,
+            index
+        ) => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+            button.className =
+                "portalButton";
+
+            button.style.animationDelay =
+                (
+                    index *
+                    55
+                ) +
+                "ms";
+
+
+            button.innerHTML = `
+
+                <span class="portalLeft">
+
+                    <span class="portalIcon">
+                        ${escapeHTML(item.icon)}
+                    </span>
+
+                    <span class="portalText">
+
+                        <span class="portalName">
+                            ${escapeHTML(item.name)}
+                        </span>
+
+                        ${
+                            item.subtitle
+                            ?
+                            `
+                            <span class="portalSubtitle">
+                                ${escapeHTML(item.subtitle)}
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                    </span>
+
+                </span>
+
+                <span class="portalArrow">
+                    →
+                </span>
+
+            `;
+
+
+            button.addEventListener(
+                "click",
+                () =>
+                    activateButton(
+                        item
+                    )
+            );
+
+
+            listContainer.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+function activateButton(
+    item
+){
+
+    const value =
+        String(
+            item.value ||
+            ""
+        );
+
+
+    const type =
+        String(
+            item.type ||
+            "link"
+        ).toLowerCase();
+
+
+    if(
+        [
+            "id",
+            "number",
+            "code"
+        ].includes(
+            type
+        )
+    ){
+
+        showContent(
+            item.name,
+            "ID / angka",
+            `
+
+            <div
+                class="note"
+                style="
+                    font-size:18px;
+                    text-align:center;
+                    word-break:break-all;
+                "
+            >
+
+                ${escapeHTML(value)}
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="primary"
+                    id="copyPortalValue"
+                    type="button"
+                >
+                    Salin
+                </button>
+
+                <button
+                    class="secondary"
+                    data-close="contentOverlay"
+                    type="button"
+                >
+                    Tutup
+                </button>
+
+            </div>
+
+            `
+        );
+
+
+        $("#copyPortalValue")
+            .addEventListener(
+                "click",
+                async () => {
+
+                    await copyText(
+                        value
+                    );
+
+                    showToast(
+                        "Berhasil disalin"
+                    );
+
+                }
+            );
+
+
+        return;
+
+    }
+
+
+    if(
+        type ===
+        "text" ||
+        type ===
+        "message"
+    ){
+
+        showContent(
+            item.name,
+            "Informasi",
+            `
+
+            <div
+                class="note"
+                style="white-space:pre-wrap"
+            >
+                ${escapeHTML(value)}
+            </div>
+
+            `
+        );
+
+
+        return;
+
+    }
+
+
+    if(
+        /^https?:\/\//i.test(
+            value
+        )
+    ){
+
+        window.location.href =
+            value;
+
+        return;
+
+    }
+
+
+    window.location.href =
+        value;
+
+}
+
+
+async function copyText(
+    text
+){
+
+    try{
+
+        await navigator.clipboard
+            .writeText(
+                text
+            );
+
+    }catch{
+
+        const textarea =
+            document.createElement(
+                "textarea"
+            );
+
+        textarea.value =
+            text;
+
+        document.body.appendChild(
+            textarea
+        );
+
+        textarea.select();
+
+        document.execCommand(
+            "copy"
+        );
+
+        textarea.remove();
+
+    }
+
+}
+
+
+/* =========================================================
+   CONTENT MODAL
+   ========================================================= */
+
+function showContent(
+    title,
+    subtitle,
+    html
+){
+
+    $("#contentTitle")
+        .textContent =
+        title;
+
+
+    $("#contentSubtitle")
+        .textContent =
+        subtitle;
+
+
+    $("#contentBody")
+        .innerHTML =
+        html;
+
+
+    openOverlay(
+        "contentOverlay"
+    );
+
+}
+
+
+/* =========================================================
+   SECRET PASSWORD ENGINE
+   ========================================================= */
+
+function resetSecret(){
+
+    state.secretStage =
+        "main";
+
+    state.activeAccess =
+        null;
+
+
+    $("#secretTitle")
+        .textContent =
+        "PRIVATE ACCESS";
+
+
+    $("#secretDescription")
+        .textContent =
+        "Masukkan kode akses untuk melanjutkan.";
+
+
+    $("#secretSubmit")
+        .textContent =
+        "Lanjut";
+
+
+    $("#secretInput")
+        .value =
+        "";
+
+
+    $("#secretInput")
+        .maxLength =
+        32;
+
+
+    $("#secretStatus")
+        .textContent =
+        "";
+
+}
+
+
+function openSecret(){
+
+    resetSecret();
+
+    openOverlay(
+        "secretOverlay"
+    );
+
+
+    setTimeout(
+        () => {
+
+            $("#secretInput")
+                .focus();
+
+        },
+        350
+    );
+
+}
+
+
+$("#secretTrigger")
+    .addEventListener(
+        "click",
+        openSecret
+    );
+
+
+function findAccess(
+    value
+){
+
+    const database =
+        typeof ACCESS_DATA !==
+        "undefined"
+            ?
+            ACCESS_DATA
+            :
+            null;
+
+
+    if(!database){
+
+        return null;
+
+    }
+
+
+    if(
+        database.normal &&
+        database.normal.password ===
+        value
+    ){
+
+        return {
+
+            type:
+                "normal",
+
+            item:
+                database.normal
+
+        };
+
+    }
+
+
+    if(
+        Array.isArray(
+            database.special
+        )
+    ){
+
+        const found =
+            database.special.find(
+                item =>
+                    item.password1 ===
+                    value
+            );
+
+
+        if(found){
+
+            return {
+
+                type:
+                    "special",
+
+                item:
+                    found
+
+            };
+
+        }
+
+    }
+
+
+    if(
+        Array.isArray(
+            database.superSpecial
+        )
+    ){
+
+        const found =
+            database.superSpecial.find(
+                item =>
+                    item.password1 ===
+                    value
+            );
+
+
+        if(found){
+
+            return {
+
+                type:
+                    "super",
+
+                item:
+                    found
+
+            };
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+function setSecretError(
+    message
+){
+
+    $("#secretStatus")
+        .textContent =
+        message;
+
+
+    const box =
+        $("#secretContent");
+
+
+    box.classList.remove(
+        "shake"
+    );
+
+
+    void box.offsetWidth;
+
+
+    box.classList.add(
+        "shake"
+    );
+
+
+    if(
+        navigator.vibrate
+    ){
+
+        navigator.vibrate(
+            35
+        );
+
+    }
+
+}
+
+
+function secretSuccess(
+    callback
+){
+
+    $("#secretContent")
+        .innerHTML = `
+
+        <div class="successMark">
+            ✓
+        </div>
+
+        <h2>
+            AKSES DITERIMA
+        </h2>
+
+        <p>
+            Verifikasi selesai.
+        </p>
+
+        `;
+
+
+    setTimeout(
+        callback,
+        650
+    );
+
+}
+
+
+function submitSecret(){
+
+    const input =
+        $("#secretInput");
+
+
+    const value =
+        input.value.trim();
+
+
+    if(!value){
+
+        setSecretError(
+            "Kode belum diisi."
+        );
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       STAGE 1
+       ----------------------------------------------------- */
+
+    if(
+        state.secretStage ===
+        "main"
+    ){
+
+        const access =
+            findAccess(
+                value
+            );
+
+
+        if(!access){
+
+            setSecretError(
+                "Kode tidak ditemukan."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            access.type ===
+            "normal"
+        ){
+
+            secretSuccess(
+                () => {
+
+                    navigateTo(
+                        access.item.link
+                    );
+
+                }
+            );
+
+            return;
+
+        }
+
+
+        state.activeAccess =
+            access.item;
+
+
+        state.secretStage =
+            access.type;
+
+
+        $("#secretTitle")
+            .textContent =
+            access.type ===
+            "special"
+                ?
+                "VERIFIKASI LANJUTAN"
+                :
+                "AKSES KHUSUS";
+
+
+        $("#secretDescription")
+            .textContent =
+            "Masukkan kode berikutnya.";
+
+
+        $("#secretSubmit")
+            .textContent =
+            "Verifikasi";
+
+
+        input.value =
+            "";
+
+
+        $("#secretStatus")
+            .textContent =
+            "";
+
+
+        input.focus();
+
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       SPECIAL
+       ----------------------------------------------------- */
+
+    if(
+        state.secretStage ===
+        "special"
+    ){
+
+        if(
+            state.activeAccess &&
+            state.activeAccess.password2 ===
+            value
+        ){
+
+            secretSuccess(
+                () => {
+
+                    navigateTo(
+                        state.activeAccess.link
+                    );
+
+                }
+            );
+
+            return;
+
+        }
+
+
+        setSecretError(
+            "Kode kedua salah."
+        );
+
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       SUPER SPECIAL
+       ----------------------------------------------------- */
+
+    if(
+        state.secretStage ===
+        "super"
+    ){
+
+        if(
+            !state.activeAccess ||
+            state.activeAccess.password2 !==
+            value
+        ){
+
+            setSecretError(
+                "Kode kedua salah."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            state.activeAccess.password3
+        ){
+
+            state.secretStage =
+                "superFinal";
+
+
+            $("#secretTitle")
+                .textContent =
+                "FINAL VERIFICATION";
+
+
+            $("#secretDescription")
+                .textContent =
+                "Masukkan tanggal DDMMYYYY.";
+
+
+            $("#secretSubmit")
+                .textContent =
+                "Verifikasi terakhir";
+
+
+            input.value =
+                "";
+
+
+            input.maxLength =
+                8;
+
+
+            input.focus();
+
+
+            return;
+
+        }
+
+
+        secretSuccess(
+            () => {
+
+                navigateTo(
+                    state.activeAccess.link
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       FINAL DATE
+       ----------------------------------------------------- */
+
+    if(
+        state.secretStage ===
+        "superFinal"
+    ){
+
+        const dateCode =
+            value.replace(
+                /\D/g,
+                ""
+            );
+
+
+        if(
+            dateCode.length !==
+            8
+        ){
+
+            setSecretError(
+                "Format harus DDMMYYYY."
+            );
+
+            return;
+
+        }
+
+
+        const configured =
+            state.activeAccess
+                ?.password3;
+
+
+        if(
+            configured ===
+            "DDMMYYYY" ||
+            configured ===
+            dateCode
+        ){
+
+            secretSuccess(
+                () => {
+
+                    navigateTo(
+                        state.activeAccess.link
+                    );
+
+                }
+            );
+
+            return;
+
+        }
+
+
+        setSecretError(
+            "Tanggal tidak cocok."
+        );
+
+    }
+
+}
+
+
+function navigateTo(
+    destination
+){
+
+    if(!destination){
+
+        return;
+
+    }
+
+
+    window.location.href =
+        destination;
+
+}
+
+
+$("#secretForm")
+    .addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+            submitSecret();
+
+        }
+    );
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+$("#menuButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            openOverlay(
+                "menuOverlay"
+            );
+
+        }
+    );
+
+
+$("#openCalendar")
+    .addEventListener(
+        "click",
+        () => {
+
+            closeOverlay(
+                "menuOverlay"
+            );
+
+            openCalendar();
+
+        }
+    );
+
+
+$("#openProfile")
+    .addEventListener(
+        "click",
+        () => {
+
+            closeOverlay(
+                "menuOverlay"
+            );
+
+            openProfile();
+
+        }
+    );
+
+
+$("#openHelp")
+    .addEventListener(
+        "click",
+        () => {
+
+            closeOverlay(
+                "menuOverlay"
+            );
+
+            openHelp();
+
+        }
+    );
+
+
+$("#toggleLightweight")
+    .addEventListener(
+        "click",
+        () => {
+
+            const enabled =
+                document.body
+                    .classList
+                    .toggle(
+                        "lightweight"
+                    );
+
+
+            localStorage.setItem(
+                STORAGE.appearance,
+                enabled
+                    ?
+                    "lightweight"
+                    :
+                    "full"
+            );
+
+
+            showToast(
+                enabled
+                    ?
+                    "Tampilan ringan aktif"
+                    :
+                    "Tampilan penuh aktif"
+            );
+
+        }
+    );
+
+
+$("#resetData")
+    .addEventListener(
+        "click",
+        () => {
+
+            if(
+                !confirm(
+                    "Hapus semua data lokal RNG_NET?"
+                )
+            ){
+
+                return;
+
+            }
+
+
+            Object.values(
+                STORAGE
+            ).forEach(
+                key =>
+                    localStorage.removeItem(
+                        key
+                    )
+            );
+
+
+            location.reload();
+
+        }
+    );
+
+
+/* =========================================================
+   ONBOARDING
+   ========================================================= */
+
+function getProfile(){
+
+    return readJSON(
+        STORAGE.profile,
+        null
+    );
+
+}
+
+
+function initializeStepbar(){
+
+    const bar =
+        $("#stepbar");
+
+
+    bar.innerHTML =
+        "";
+
+
+    for(
+        let i = 1;
+        i <= 5;
+        i++
+    ){
+
+        const line =
+            document.createElement(
+                "i"
+            );
+
+
+        if(
+            i === 1
+        ){
+
+            line.classList.add(
+                "active"
+            );
+
+        }
+
+
+        bar.appendChild(
+            line
+        );
+
+    }
+
+}
+
+
+function openOnboarding(){
+
+    state.onboardingStep =
+        1;
+
+    state.onboardingData =
+        {};
+
+
+    initializeStepbar();
+
+
+    $$(".question")
+        .forEach(
+            question => {
+
+                question.classList.toggle(
+                    "active",
+                    question.dataset.step ===
+                    "1"
+                );
+
+            }
+        );
+
+
+    $("#onboardingBack")
+        .disabled =
+        true;
+
+
+    $("#onboardingNext")
+        .textContent =
+        "Lanjut";
+
+
+    openOverlay(
+        "onboardingOverlay"
+    );
+
+}
+
+
+function collectOnboarding(){
+
+    const form =
+        $("#onboardingForm");
+
+
+    const formData =
+        new FormData(
+            form
+        );
+
+
+    state.onboardingData = {
+
+        ...state.onboardingData,
+
+        ...Object.fromEntries(
+            formData.entries()
+        )
+
+    };
+
+
+    $$(".choice.active")
+        .forEach(
+            choice => {
+
+                state.onboardingData[
+                    choice.dataset.choice
+                ] =
+                    choice.dataset.value;
+
+            }
+        );
+
+}
+
+
+function validateOnboarding(){
+
+    collectOnboarding();
+
+
+    const data =
+        state.onboardingData;
+
+
+    const step =
+        state.onboardingStep;
+
+
+    if(
+        step === 1 &&
+        !data.name
+    ){
+
+        return "Nama belum diisi.";
+
+    }
+
+
+    if(
+        step === 1 &&
+        !data.age
+    ){
+
+        return "Umur belum diisi.";
+
+    }
+
+
+    if(
+        step === 1 &&
+        !data.status
+    ){
+
+        return "Pilih status.";
+
+    }
+
+
+    if(
+        step === 2 &&
+        !data.hasHours
+    ){
+
+        return "Pilih kondisi jam kerja.";
+
+    }
+
+
+    if(
+        step === 2 &&
+        !data.calendarMode
+    ){
+
+        return "Pilih mode kalender.";
+
+    }
+
+
+    if(
+        step === 4 &&
+        !data.hasOvertime
+    ){
+
+        return "Pilih kondisi lembur.";
+
+    }
+
+
+    if(
+        step === 5 &&
+        !data.salary
+    ){
+
+        return "Pilih hitung gaji atau tidak.";
+
+    }
+
+
+    return "";
+
+}
+
+
+function updateOnboardingStep(){
+
+    const step =
+        state.onboardingStep;
+
+
+    $$(".question")
+        .forEach(
+            question => {
+
+                question.classList.toggle(
+                    "active",
+                    question.dataset.step ===
+                    String(step)
+                );
+
+            }
+        );
+
+
+    $$("#stepbar i")
+        .forEach(
+            (
+                line,
+                index
+            ) => {
+
+                line.classList.toggle(
+                    "active",
+                    index < step
+                );
+
+            }
+        );
+
+
+    $("#onboardingBack")
+        .disabled =
+        step === 1;
+
+
+    $("#onboardingNext")
+        .textContent =
+        step === 5
+            ?
+            "Simpan"
+            :
+            "Lanjut";
+
+}
+
+
+$("#onboardingNext")
+    .addEventListener(
+        "click",
+        () => {
+
+            const error =
+                validateOnboarding();
+
+
+            if(error){
+
+                showToast(
+                    error
+                );
+
+                return;
+
+            }
+
+
+            if(
+                state.onboardingStep <
+                5
+            ){
+
+                state.onboardingStep++;
+
+                updateOnboardingStep();
+
+                return;
+
+            }
+
+
+            const profile = {
+
+                ...state.onboardingData,
+
+                createdAt:
+                    new Date()
+                    .toISOString()
+
+            };
+
+
+            writeJSON(
+                STORAGE.profile,
+                profile
+            );
+
+
+            createInitialCalendar(
+                profile
+            );
+
+
+            closeOverlay(
+                "onboardingOverlay"
+            );
+
+
+            showToast(
+                "Pengaturan tersimpan"
+            );
+
+
+            openCalendar();
+
+        }
+    );
+
+
+$("#onboardingBack")
+    .addEventListener(
+        "click",
+        () => {
+
+            if(
+                state.onboardingStep >
+                1
+            ){
+
+                collectOnboarding();
+
+                state.onboardingStep--;
+
+                updateOnboardingStep();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   CHOICE HANDLERS
+   ========================================================= */
+
+$$(".choice")
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const group =
+                        button.dataset.choice;
+
+
+                    $$(
+                        `.choice[data-choice="${CSS.escape(group)}"]`
+                    )
+                    .forEach(
+                        choice =>
+                            choice.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    const value =
+                        button.dataset.value;
+
+
+                    if(
+                        group ===
+                        "status"
+                    ){
+
+                        $("#schoolField")
+                            .hidden =
+                            value !==
+                            "sekolah";
+
+
+                        $("#companyField")
+                            .hidden =
+                            value !==
+                            "kerja";
+
+                    }
+
+
+                    if(
+                        group ===
+                        "hasHours"
+                    ){
+
+                        $("#shiftField")
+                            .hidden =
+                            value !==
+                            "yes";
+
+                    }
+
+
+                    if(
+                        group ===
+                        "hasShift"
+                    ){
+
+                        $("#shiftCountField")
+                            .hidden =
+                            value !==
+                            "yes";
+
+
+                        $("#shiftWriteField")
+                            .hidden =
+                            value !==
+                            "yes";
+
+                    }
+
+
+                    if(
+                        group ===
+                        "satDifferent"
+                    ){
+
+                        $("#satHoursField")
+                            .hidden =
+                            value !==
+                            "yes";
+
+                    }
+
+
+                    if(
+                        group ===
+                        "hasOvertime"
+                    ){
+
+                        $("#overtimeModeField")
+                            .hidden =
+                            value !==
+                            "yes";
+
+                    }
+
+
+                    if(
+                        group ===
+                        "overtimeMode"
+                    ){
+
+                        $("#overtimeRateField")
+                            .hidden =
+                            value !==
+                            "fixed";
+
+                    }
+
+
+                    if(
+                        group ===
+                        "salary"
+                    ){
+
+                        $("#salaryField")
+                            .hidden =
+                            value !==
+                            "yes";
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   CALENDAR DATA
+   ========================================================= */
+
+function getCalendarData(){
+
+    return readJSON(
+        STORAGE.calendar,
+        {
+            days:
+                {},
+
+            updatedAt:
+                null
+
+        }
+    );
+
+}
+
+
+function dateKey(
+    date
+){
+
+    return (
+
+        date.getFullYear()
+        +
+        "-"
+        +
+        String(
+            date.getMonth()+1
+        ).padStart(
+            2,
+            "0"
+        )
+        +
+        "-"
+        +
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        )
+
+    );
+
+}
+
+
+function getDayData(
+    key
+){
+
+    const data =
+        getCalendarData();
+
+
+    return (
+        data.days[key]
+        ||
+        {
+
+            status:
+                "off",
+
+            start:
+                "",
+
+            end:
+                "",
+
+            overtime:
+                0,
+
+            manual:
+                false
+
+        }
+    );
+
+}
+
+
+function saveDayData(
+    key,
+    value
+){
+
+    const data =
+        getCalendarData();
+
+
+    data.days[key] = {
+
+        ...getDayData(
+            key
+        ),
+
+        ...value,
+
+        manual:
+            true
+
+    };
+
+
+    data.updatedAt =
+        new Date()
+        .toISOString();
+
+
+    writeJSON(
+        STORAGE.calendar,
+        data
+    );
+
+
+    addHistory(
+        "Perubahan tanggal",
+        key
+    );
+
+}
+
+
+function addHistory(
+    action,
+    date
+){
+
+    const history =
+        readJSON(
+            STORAGE.history,
+            []
+        );
+
+
+    history.unshift({
+
+        action:
+            action,
+
+        date:
+            date,
+
+        at:
+            new Date()
+            .toISOString()
+
+    });
+
+
+    writeJSON(
+        STORAGE.history,
+        history.slice(
+            0,
+            150
+        )
+    );
+
+}
+
+
+/* =========================================================
+   INITIAL CALENDAR
+   ========================================================= */
+
+function buildAutoDay(date, profile){
+    const weekday=date.getDay();
+    let isWork=weekday>=1 && weekday<=5;
+    if(weekday===6 && profile.satDifferent==="yes") isWork=true;
+    if(weekday===0 && profile.sundayWork==="yes") isWork=true;
+    let start=profile.start||"", end=profile.end||"";
+    if(weekday===6 && profile.satDifferent==="yes"){start=profile.satStart||"";end=profile.satEnd||"";}
+    return {status:isWork?"work":"off",start:isWork?start:"",end:isWork?end:"",overtime:0,manual:false,autoDate:true};
+}
+
+function createInitialCalendar(profile){
+    const data={days:{},updatedAt:new Date().toISOString()};
+    if(profile.calendarMode==="auto") data.days[dateKey(new Date())]=buildAutoDay(new Date(),profile);
+    writeJSON(STORAGE.calendar,data);
+    writeJSON(STORAGE.history,[]);
+}
+
+function syncAutoCalendarToday(){
+    const profile=getProfile();
+    if(!profile || profile.calendarMode!=="auto") return;
+    const today=new Date(),key=dateKey(today),data=getCalendarData();
+    const todayTime=new Date(today.getFullYear(),today.getMonth(),today.getDate()).getTime();
+
+    /* Clean only old automatically-generated FUTURE entries.
+     * Manual entries are never touched. */
+    Object.keys(data.days).forEach(dayKey=>{
+        const item=data.days[dayKey];
+        const d=new Date(dayKey+"T00:00:00");
+        if(!item?.manual && d.getTime()>todayTime) delete data.days[dayKey];
+    });
+
+    const existing=data.days[key];
+    if(!existing || existing.autoDate===true || existing.manual===false){
+        data.days[key]=existing?.manual?existing:buildAutoDay(today,profile);
+        data.updatedAt=new Date().toISOString();
+        writeJSON(STORAGE.calendar,data);
+    }else{
+        writeJSON(STORAGE.calendar,data);
+    }
+}
+
+
+/* =========================================================
+   OPEN CALENDAR
+   ========================================================= */
+
+function openCalendar(){
+
+    const profile =
+        getProfile();
+
+
+    if(!profile){
+
+        openOnboarding();
+
+        return;
+
+    }
+
+
+    syncAutoCalendarToday();
+
+    $("#calendarUser")
+        .textContent =
+        `${profile.name || "Pengguna"} · ${
+            profile.calendarMode === "auto"
+                ?
+                "otomatis"
+                :
+                "manual"
+        }`;
+
+
+    renderCalendar();
+
+
+    openOverlay(
+        "calendarOverlay"
+    );
+
+}
+
+
+/* =========================================================
+   MONTH NAME
+   ========================================================= */
+
+function monthName(
+    month
+){
+
+    return [
+
+        "Januari",
+
+        "Februari",
+
+        "Maret",
+
+        "April",
+
+        "Mei",
+
+        "Juni",
+
+        "Juli",
+
+        "Agustus",
+
+        "September",
+
+        "Oktober",
+
+        "November",
+
+        "Desember"
+
+    ][month];
+
+}
+
+
+/* =========================================================
+   RENDER CALENDAR
+   ========================================================= */
+
+function renderCalendar(){
+
+    const year =
+        state.calendarDate
+            .getFullYear();
+
+
+    const month =
+        state.calendarDate
+            .getMonth();
+
+
+    $("#monthLabel")
+        .textContent =
+        monthName(
+            month
+        );
+
+
+    $("#yearLabel")
+        .textContent =
+        year;
+
+
+    const container =
+        $("#calendarDays");
+
+
+    container.innerHTML =
+        "";
+
+
+    const first =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+
+    const firstWeekday =
+        first.getDay();
+
+
+    const maxDay =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+
+    const previousMax =
+        new Date(
+            year,
+            month,
+            0
+        ).getDate();
+
+
+    for(
+        let i = 0;
+        i < 42;
+        i++
+    ){
+
+        const number =
+            i -
+            firstWeekday +
+            1;
+
+
+        let cellDate;
+
+
+        if(
+            number < 1
+        ){
+
+            cellDate =
+                new Date(
+                    year,
+                    month - 1,
+                    previousMax + number
+                );
+
+        }else if(
+            number >
+            maxDay
+        ){
+
+            cellDate =
+                new Date(
+                    year,
+                    month,
+                    number
+                );
+
+        }else{
+
+            cellDate =
+                new Date(
+                    year,
+                    month,
+                    number
+                );
+
+        }
+
+
+        const key =
+            dateKey(
+                cellDate
+            );
+
+
+        const info =
+            getDayData(
+                key
+            );
+
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.type =
+            "button";
+
+
+        button.className =
+            "calendarDay";
+
+
+        if(
+            cellDate.getMonth() !==
+            month
+        ){
+
+            button.classList.add(
+                "muted"
+            );
+
+        }
+
+
+        if(
+            key ===
+            dateKey(
+                new Date()
+            )
+        ){
+
+            button.classList.add(
+                "today"
+            );
+
+        }
+
+
+        if(
+            info.status ===
+            "work"
+        ){
+
+            button.classList.add(
+                "work"
+            );
+
+        }
+
+
+        if(
+            info.status ===
+            "leave"
+        ){
+
+            button.classList.add(
+                "leave"
+            );
+
+        }
+
+
+        if(
+            info.status ===
+            "off"
+        ){
+
+            button.classList.add(
+                "off"
+            );
+
+        }
+
+
+        let label =
+            "Off";
+
+
+        if(
+            info.status ===
+            "work"
+        ){
+
+            label =
+                info.start &&
+                info.end
+                    ?
+                    `${info.start}–${info.end}`
+                    :
+                    "Kerja";
+
+        }
+
+
+        if(
+            info.status ===
+            "leave"
+        ){
+
+            label =
+                "Libur";
+
+        }
+
+
+        button.innerHTML = `
+
+            <b>
+                ${cellDate.getDate()}
+            </b>
+
+            ${
+                Number(
+                    info.overtime
+                ) > 0
+                    ?
+                    `<span class="otDot"></span>`
+                    :
+                    ""
+            }
+
+            <small>
+                ${escapeHTML(label)}
+            </small>
+
+        `;
+
+
+        let calendarPointerStart=null;
+        button.addEventListener("pointerdown",event=>{
+            calendarPointerStart={x:event.clientX,y:event.clientY};
+        },{passive:true});
+
+        button.addEventListener(
+            "click",
+            event => {
+                if(calendarPointerStart){
+                    const moved=Math.hypot(event.clientX-calendarPointerStart.x,event.clientY-calendarPointerStart.y);
+                    calendarPointerStart=null;
+                    if(moved>10) return;
+                }
+                if(cellDate.getMonth()!==month || cellDate.getFullYear()!==year){
+                    event.preventDefault();
+                    state.calendarDate=new Date(cellDate.getFullYear(),cellDate.getMonth(),1);
+                    renderCalendar();
+                    return;
+                }
+                editCalendarDay(key);
+            }
+        );
+
+
+        container.appendChild(
+            button
+        );
+
+    }
+
+
+    updateCalendarStats(
+        year,
+        month
+    );
+
+}
+
+
+/* =========================================================
+   CALENDAR STATS
+   ========================================================= */
+
+function timeToMinutes(value){
+    if(!value || !/^\d{2}:\d{2}$/.test(value)) return 0;
+    const [h,m]=value.split(":").map(Number); return h*60+m;
+}
+function durationHours(start,end){
+    if(!start || !end) return 0;
+    let a=timeToMinutes(start),b=timeToMinutes(end); if(b<a)b+=1440; return Math.max(0,(b-a)/60);
+}
+function formatMoney(value){
+    if(!Number.isFinite(value)||value<=0)return "—";
+    return "Rp"+Math.round(value).toLocaleString("id-ID");
+}
+function updateCalendarStats(year,month){
+    const data=getCalendarData(),profile=getProfile()||{};
+    const maxDay=new Date(year,month+1,0).getDate();
+    let work=0,off=0,overtime=0,workHours=0;
+    for(let day=1;day<=maxDay;day++){
+        const info=data.days[dateKey(new Date(year,month,day))]; if(!info)continue;
+        if(info.status==="work"){work++;workHours+=durationHours(info.start,info.end);}else off++;
+        overtime+=Number(info.overtime||0);
+    }
+    $("#workCount").textContent=work;
+    $("#offCount").textContent=off;
+    $("#overtimeCount").textContent=overtime+"j";
+    const enabled=String(profile.salary)==="yes";
+    const amount=Number(profile.salaryAmount||profile.salaryValue||profile.salaryNominal||0);
+    const base=profile.salaryBase||"day";
+    let estimate=0;
+    if(enabled&&amount>0){
+        if(base==="day")estimate=work*amount;
+        else if(base==="hour")estimate=workHours*amount;
+        else estimate=amount*(work/Math.max(1,maxDay));
+    }
+    $("#salaryEstimate").textContent=formatMoney(estimate);
+    const hoursEl=document.getElementById("workHoursCount");
+    if(hoursEl)hoursEl.textContent=(Number.isInteger(workHours)?workHours:workHours.toFixed(1))+"j";
+}
+
+
+/* =========================================================
+   EDIT DAY
+   ========================================================= */
+
+function editCalendarDay(
+    key
+){
+
+    const info =
+        getDayData(
+            key
+        );
+
+
+    const date =
+        new Date(
+            key +
+            "T00:00:00"
+        );
+
+
+    const title =
+        date.toLocaleDateString(
+            "id-ID",
+            {
+
+                day:
+                    "numeric",
+
+                month:
+                    "long",
+
+                year:
+                    "numeric"
+
+            }
+        );
+
+
+    showContent(
+        title,
+        "Atur tanggal",
+        `
+
+        <div class="formGrid">
+
+            <div class="field">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="editStatus">
+
+                    <option
+                        value="work"
+                        ${
+                            info.status ===
+                            "work"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Hari kerja
+                    </option>
+
+                    <option
+                        value="off"
+                        ${
+                            info.status ===
+                            "off"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Off
+                    </option>
+
+                    <option
+                        value="leave"
+                        ${
+                            info.status ===
+                            "leave"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Libur
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="row" id="editWorkFields">
+
+                <div class="field">
+
+                    <label>
+                        Jam masuk
+                    </label>
+
+                    <input
+                        id="editStart"
+                        type="time"
+                        value="${escapeHTML(info.start)}"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Jam pulang
+                    </label>
+
+                    <input
+                        id="editEnd"
+                        type="time"
+                        value="${escapeHTML(info.end)}"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="field" id="editOvertimeChoiceField">
+                <label>Ada lembur?</label>
+                <select id="editHasOvertime">
+                    <option value="no" ${Number(info.overtime||0)>0?"":"selected"}>Tidak</option>
+                    <option value="yes" ${Number(info.overtime||0)>0?"selected":""}>Ya</option>
+                </select>
+            </div>
+
+            <div class="field" id="editOvertimeField" hidden>
+                <label>Lembur (jam)
+                </label>
+
+                <input
+                    id="editOvertime"
+                    type="number"
+                    min="0"
+                    step=".5"
+                    value="${Number(info.overtime || 0)}"
+                >
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="secondary"
+                    id="deleteDate"
+                    type="button"
+                >
+                    Hapus data
+                </button>
+
+
+                <button
+                    class="primary"
+                    id="saveDate"
+                    type="button"
+                >
+                    Simpan
+                </button>
+
+            </div>
+
+        </div>
+
+        `
+    );
+
+
+    const editStatus=$("#editStatus"),workFields=$("#editWorkFields"),overtimeChoice=$("#editOvertimeChoiceField"),overtimeField=$("#editOvertimeField");
+    function syncEditFields(){
+        const isWork=editStatus.value==="work";
+        workFields.hidden=!isWork;
+        overtimeChoice.hidden=!isWork || !(getProfile()?.hasOvertime==="yes");
+        overtimeField.hidden=!isWork || !(getProfile()?.hasOvertime==="yes") || $("#editHasOvertime").value!=="yes";
+        if(!isWork)$("#editOvertime").value=0;
+    }
+    editStatus.addEventListener("change",syncEditFields);
+    $("#editHasOvertime").addEventListener("change",syncEditFields);
+    syncEditFields();
+
+    $("#saveDate")
+        .addEventListener(
+            "click",
+            () => {
+
+                saveDayData(
+                    key,
+                    {
+
+                        status:
+                            $("#editStatus")
+                                .value,
+
+                        start:
+                            $("#editStart")
+                                .value,
+
+                        end:
+                            $("#editEnd")
+                                .value,
+
+                        overtime:
+                            $("#editHasOvertime").value === "yes"
+                                ? Number($("#editOvertime").value) || 0
+                                : 0
+
+                    }
+                );
+
+
+                closeOverlay(
+                    "contentOverlay"
+                );
+
+
+                renderCalendar();
+
+
+                showToast(
+                    "Tanggal disimpan"
+                );
+
+            }
+        );
+
+
+    $("#deleteDate")
+        .addEventListener(
+            "click",
+            () => {
+
+                const data =
+                    getCalendarData();
+
+
+                delete data.days[
+                    key
+                ];
+
+
+                writeJSON(
+                    STORAGE.calendar,
+                    data
+                );
+
+
+                addHistory(
+                    "Hapus data tanggal",
+                    key
+                );
+
+
+                closeOverlay(
+                    "contentOverlay"
+                );
+
+
+                renderCalendar();
+
+
+                showToast(
+                    "Data tanggal dihapus"
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   MONTH NAVIGATION
+   ========================================================= */
+
+$("#previousMonth")
+    .addEventListener(
+        "click",
+        () => {
+
+            state.calendarDate=new Date(state.calendarDate.getFullYear(),state.calendarDate.getMonth()-1,1);
+
+            renderCalendar();
+
+        }
+    );
+
+
+$("#nextMonth")
+    .addEventListener(
+        "click",
+        () => {
+
+            state.calendarDate=new Date(state.calendarDate.getFullYear(),state.calendarDate.getMonth()+1,1);
+
+            renderCalendar();
+
+        }
+    );
+
+
+$("#currentMonth")
+    .addEventListener(
+        "click",
+        () => {
+
+            state.calendarDate =
+                new Date();
+
+            renderCalendar();
+
+        }
+    );
+
+
+$("#calendarToday")
+    .addEventListener(
+        "click",
+        () => {
+
+            const today=new Date();
+            state.calendarDate=new Date(today.getFullYear(),today.getMonth(),1);
+            renderCalendar();
+            $("#calendarDays .calendarDay.today")?.scrollIntoView({behavior:"smooth",block:"center"});
+
+        }
+    );
+
+
+/* =========================================================
+   CALENDAR SETTINGS
+   ========================================================= */
+
+$("#calendarSettings")
+    .addEventListener(
+        "click",
+        () => {
+
+            openProfile();
+
+        }
+    );
+
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+$("#calendarHistory")
+    .addEventListener(
+        "click",
+        openHistory
+    );
+
+
+function openHistory(){
+
+    const history =
+        readJSON(
+            STORAGE.history,
+            []
+        );
+
+
+    let html;
+
+
+    if(
+        !history.length
+    ){
+
+        html = `
+
+            <div class="note">
+                Belum ada riwayat.
+            </div>
+
+        `;
+
+    }else{
+
+        html = `
+
+            <div class="historyList">
+
+                ${
+                    history
+                    .slice(
+                        0,
+                        70
+                    )
+                    .map(
+                        item => `
+
+                        <div class="historyItem">
+
+                            <div>
+
+                                <b>
+                                    ${escapeHTML(
+                                        item.action
+                                    )}
+                                </b>
+
+                                <small>
+                                    ${escapeHTML(
+                                        item.date
+                                    )}
+                                </small>
+
+                            </div>
+
+                            <small>
+                                ${new Date(
+                                    item.at
+                                ).toLocaleString(
+                                    "id-ID"
+                                )}
+                            </small>
+
+                        </div>
+
+                        `
+                    )
+                    .join("")
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    showContent(
+        "History",
+        "Riwayat kalender",
+        html
+    );
+
+}
+
+
+/* =========================================================
+   HOLIDAY RANGE
+   ========================================================= */
+
+$("#calendarHoliday")
+    .addEventListener(
+        "click",
+        openHoliday
+    );
+
+
+function openHoliday(){
+
+    showContent(
+        "Atur libur",
+        "Satu hari atau beberapa hari",
+        `
+
+        <div class="formGrid">
+
+            <div class="row">
+
+                <div class="field">
+
+                    <label>
+                        Dari
+                    </label>
+
+                    <input
+                        id="holidayFrom"
+                        type="date"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Sampai
+                    </label>
+
+                    <input
+                        id="holidayTo"
+                        type="date"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="note">
+
+                Contoh:
+                1 sampai 5 akan menandai
+                tanggal 1, 2, 3, 4 dan 5
+                sebagai libur.
+
+            </div>
+
+
+            <button
+                class="primary"
+                id="saveHoliday"
+                type="button"
+            >
+                Tandai libur
+            </button>
+
+        </div>
+
+        `
+    );
+
+
+    $("#saveHoliday")
+        .addEventListener(
+            "click",
+            () => {
+
+                const from =
+                    $("#holidayFrom")
+                        .value;
+
+
+                const to =
+                    $("#holidayTo")
+                        .value;
+
+
+                if(
+                    !from ||
+                    !to ||
+                    from > to
+                ){
+
+                    showToast(
+                        "Tanggal belum benar"
+                    );
+
+                    return;
+
+                }
+
+
+                const data =
+                    getCalendarData();
+
+
+                const start =
+                    new Date(
+                        from +
+                        "T00:00:00"
+                    );
+
+
+                const finish =
+                    new Date(
+                        to +
+                        "T00:00:00"
+                    );
+
+
+                for(
+                    const date =
+                        new Date(start);
+
+                    date <= finish;
+
+                    date.setDate(
+                        date.getDate() + 1
+                    )
+                ){
+
+                    const key =
+                        dateKey(
+                            date
+                        );
+
+
+                    data.days[key] = {
+
+                        ...getDayData(
+                            key
+                        ),
+
+                        status:
+                            "leave",
+
+                        overtime:
+                            0,
+
+                        manual:
+                            true
+
+                    };
+
+
+                    addHistory(
+                        "Tandai libur",
+                        key
+                    );
+
+                }
+
+
+                writeJSON(
+                    STORAGE.calendar,
+                    data
+                );
+
+
+                closeOverlay(
+                    "contentOverlay"
+                );
+
+
+                renderCalendar();
+
+
+                showToast(
+                    "Rentang libur dibuat"
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+function openProfile(){
+
+    const profile =
+        getProfile() ||
+        {};
+
+
+    showContent(
+        "Profil & pengaturan",
+        "Pengaturan kalender",
+        `
+
+        <form
+            class="formGrid"
+            id="profileForm"
+        >
+
+
+            <div class="field">
+
+                <label>
+                    Nama panggilan
+                </label>
+
+                <input
+                    name="name"
+                    value="${escapeHTML(
+                        profile.name
+                    )}"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Umur
+                </label>
+
+                <input
+                    name="age"
+                    type="number"
+                    value="${escapeHTML(
+                        profile.age
+                    )}"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Status
+                </label>
+
+                <select name="status">
+
+                    <option
+                        value="sekolah"
+                        ${
+                            profile.status ===
+                            "sekolah"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Sekolah
+                    </option>
+
+                    <option
+                        value="kerja"
+                        ${
+                            profile.status ===
+                            "kerja"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Kerja
+                    </option>
+
+                    <option
+                        value="lain"
+                        ${
+                            profile.status ===
+                            "lain"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Lainnya
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Sekolah / PT
+                </label>
+
+                <input
+                    name="place"
+                    value="${escapeHTML(
+                        profile.school ||
+                        profile.company ||
+                        ""
+                    )}"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Mode kalender
+                </label>
+
+                <select name="calendarMode">
+
+                    <option
+                        value="auto"
+                        ${
+                            profile.calendarMode ===
+                            "auto"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Otomatis
+                    </option>
+
+                    <option
+                        value="manual"
+                        ${
+                            profile.calendarMode ===
+                            "manual"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Manual
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field" id="profileSalaryField">
+                <label>Hitung gaji</label>
+                <select name="salary">
+                    <option value="yes" ${profile.salary==="yes"?"selected":""}>Ya</option>
+                    <option value="no" ${profile.salary==="no"?"selected":""}>Tidak</option>
+                </select>
+                <div class="row" style="margin-top:8px">
+                    <select name="salaryBase">
+                        <option value="day" ${profile.salaryBase==="day"?"selected":""}>Per hari</option>
+                        <option value="hour" ${profile.salaryBase==="hour"?"selected":""}>Per jam</option>
+                        <option value="month" ${profile.salaryBase==="month"?"selected":""}>Per bulan</option>
+                    </select>
+                    <input name="salaryAmount" type="number" min="0" value="${escapeHTML(profile.salaryAmount||"")}" placeholder="Nominal">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Jam kerja utama</label>
+                <div class="row">
+                    <input name="start" type="time" value="${escapeHTML(profile.start||"")}">
+                    <input name="end" type="time" value="${escapeHTML(profile.end||"")}">
+                </div>
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Hitung hari libur
+                </label>
+
+                <select name="countOff">
+
+                    <option
+                        value="yes"
+                        ${
+                            profile.countOff ===
+                            "yes"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Ya
+                    </option>
+
+                    <option
+                        value="no"
+                        ${
+                            profile.countOff ===
+                            "no"
+                                ?
+                                "selected"
+                                :
+                                ""
+                        }
+                    >
+                        Tidak
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                Simpan pengaturan
+            </button>
+
+
+        </form>
+
+        `
+    );
+
+
+    $("#profileForm")
+        .addEventListener(
+            "submit",
+            event => {
+
+                event.preventDefault();
+
+
+                const form =
+                    event.currentTarget;
+
+
+                const formData =
+                    Object.fromEntries(
+                        new FormData(
+                            form
+                        )
+                    );
+
+
+                const old =
+                    getProfile() ||
+                    {};
+
+
+                const updated = {
+
+                    ...old,
+
+                    ...formData,
+                    salaryAmount: Number(formData.salaryAmount || 0),
+
+                    school:
+                        formData.status ===
+                        "sekolah"
+                            ?
+                            formData.place
+                            :
+                            old.school,
+
+                    company:
+                        formData.status ===
+                        "kerja"
+                            ?
+                            formData.place
+                            :
+                            old.company
+
+                };
+
+
+                writeJSON(
+                    STORAGE.profile,
+                    updated
+                );
+
+
+                closeOverlay(
+                    "contentOverlay"
+                );
+
+
+                if(
+                    $("#calendarOverlay")
+                ){
+
+                    renderCalendar();
+
+                }
+
+
+                showToast(
+                    "Profil diperbarui"
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   HELP
+   ========================================================= */
+
+function openHelp(){
+
+    showContent(
+        "Tata cara penggunaan",
+        "Panduan RNG_NET",
+        `
+
+        <div class="help">
+
+
+            <section class="helpSection">
+
+                <h3>
+                    1. Menu utama
+                </h3>
+
+                <p>
+                    Tombol portal diambil dari
+                    file konfigurasi tombol.
+                    Jadi tombol dapat ditambah,
+                    dihapus atau diubah tanpa
+                    mengedit bagian utama index.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    2. Kalender pertama kali
+                </h3>
+
+                <p>
+                    Buka Menu → Kalender.
+                    Jika belum ada profil,
+                    sistem akan menampilkan
+                    pertanyaan pengaturan terlebih dahulu.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    3. Otomatis dan manual
+                </h3>
+
+                <p>
+                    Mode otomatis membuat pola
+                    kalender berdasarkan pengaturan
+                    jam kerja.
+                    Mode manual membuat kamu
+                    mengisi tanggal sendiri.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    4. Mengubah tanggal
+                </h3>
+
+                <p>
+                    Tekan tanggal pada kalender.
+                    Kamu dapat memilih kerja,
+                    off atau libur, lalu memasukkan
+                    jam masuk, jam pulang dan lembur.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    5. Libur beberapa hari
+                </h3>
+
+                <p>
+                    Gunakan tombol
+                    <b>Atur libur</b>.
+                    Isi tanggal awal dan tanggal akhir.
+                    Semua tanggal di antara keduanya
+                    akan ditandai sebagai libur.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    6. Kalau salah memasukkan libur
+                </h3>
+
+                <p>
+                    Tinggal tekan tanggal tersebut
+                    lalu ubah kembali menjadi
+                    Hari kerja / Off,
+                    atau gunakan tombol
+                    Hapus data.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    7. History
+                </h3>
+
+                <p>
+                    Perubahan kalender dicatat
+                    secara lokal sehingga kamu
+                    dapat melihat perubahan sebelumnya.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    8. Data browser
+                </h3>
+
+                <p>
+                    Profil, kalender, history dan
+                    preferensi tampilan disimpan
+                    menggunakan localStorage.
+                    Data tersebut tersimpan di browser
+                   /perangkat yang digunakan.
+                </p>
+
+            </section>
+
+
+            <section class="helpSection">
+
+                <h3>
+                    9. Password
+                </h3>
+
+                <p>
+                    Password tidak ditulis di
+                    index.html. Sistem mengambil
+                    data akses dari file password
+                    eksternal.
+                </p>
+
+            </section>
+
+
+        </div>
+
+        `
+    );
+
+}
+
+
+/* =========================================================
+   APPEARANCE
+   ========================================================= */
+
+if(
+    localStorage.getItem(
+        STORAGE.appearance
+    ) ===
+    "lightweight"
+){
+
+    document.body.classList.add(
+        "lightweight"
+    );
+
+}
+
+
+/* =========================================================
+   CLOCK
+   ========================================================= */
+
+function updateClock(){
+
+    const now =
+        new Date();
+
+
+    $("#systemStatus")
+        .textContent =
+        now.toLocaleTimeString(
+            "id-ID",
+            {
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                second:
+                    "2-digit"
+
+            }
+        ) +
+        " · LOCAL";
+
+}
+
+
+setInterval(
+    updateClock,
+    1000
+);
+
+
+updateClock();
+
+
+/* =========================================================
+   FIRST LOAD
+   ========================================================= */
+
+renderButtons();
+
+
+if(
+    !getProfile()
+){
+
+    /*
+     * Jangan langsung membuka onboarding
+     * ketika halaman pertama kali dibuka.
+     *
+     * Pengguna tetap melihat web normal.
+     * Onboarding baru muncul ketika
+     * Kalender dibuka.
+     */
+
+}
+
+
+/* =========================================================
+   END
+   ========================================================= */
+
+</script>
+
+
+</body>
+</html>
