@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Birthday ✦</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg">
+  <div class="stars"></div>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="moon"></div>
+</div>
+
+<canvas id="fx"></canvas>
+<audio id="music" loop></audio>
+
+<main id="app">
+
+  <!-- 1 -->
+  <section class="scene active" data-scene="0">
+    <div class="eyebrow">A LITTLE SURPRISE</div>
+    <div class="floating-heart">♡</div>
+    <h1 class="hero">Hey,<br><em id="name1"></em></h1>
+    <p id="intro"></p>
+    <button class="btn gold next">Buka pelan-pelan ✦</button>
+    <div class="tap">tap layar untuk mengaktifkan musik ♫</div>
+  </section>
+
+  <!-- 2 -->
+  <section class="scene" data-scene="1">
+    <div class="progress">01 — 06</div>
+    <div class="glass reveal">
+      <div class="spark">✦</div>
+      <div class="eyebrow">TODAY IS DIFFERENT</div>
+      <h2>Karena hari ini<br>ada yang spesial.</h2>
+      <div class="name-reveal" id="name2"></div>
+      <p>Dan halaman ini dibuat khusus untuk merayakan satu hal kecil:</p>
+      <strong>hari lahir seseorang yang berharga.</strong>
+      <button class="btn outline next">Lanjut →</button>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="scene" data-scene="2">
+    <div class="progress">02 — 06</div>
+    <div class="birthday">
+      <div class="crown">♕</div>
+      <div class="eyebrow" id="date"></div>
+      <h2>HAPPY<br><em>BIRTHDAY</em></h2>
+
+      <div class="cake-wrap" id="cake">
+        <div class="cake">
+          <div class="cake-top"></div>
+          <div class="icing"></div>
+          <div class="cake-body"></div>
+          <div class="plate"></div>
+          <div class="candle c1"><i></i></div>
+          <div class="candle c2"><i></i></div>
+          <div class="candle c3"><i></i></div>
+        </div>
+      </div>
+
+      <p>Hari ini adalah hari kamu. Jadi untuk beberapa detik, biarkan semuanya berhenti sebentar.</p>
+      <button class="btn gold next">Buat permintaan ✨</button>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="scene" data-scene="3">
+    <div class="progress">03 — 06</div>
+    <div class="glass letter">
+      <div class="envelope">✉</div>
+      <div class="eyebrow">A LETTER FOR YOU</div>
+      <h2 id="letterTitle"></h2>
+      <div id="message"></div>
+      <div class="signature">— seseorang yang sengaja membuat halaman ini ♡</div>
+      <button class="btn outline next">Masih ada lagi…</button>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="scene" data-scene="4">
+    <div class="progress">04 — 06</div>
+    <div class="memory">
+      <div class="polaroid">
+        <div class="memory-photo" id="memorySymbol"></div>
+        <span>one little memory</span>
+      </div>
+      <div class="eyebrow">KEEP THIS MOMENT</div>
+      <h2>Satu hal untuk diingat.</h2>
+      <p>Di antara begitu banyak hari biasa, semoga hari ini menjadi salah satu hari yang pantas kamu simpan.</p>
+      <div class="little-stars">✦　⋆　✦　⋆　✦</div>
+      <button class="btn gold next">Terakhir ✨</button>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="scene final" data-scene="5">
+    <div class="eyebrow">05 — THE LAST PAGE</div>
+    <div class="final-heart">♡</div>
+    <h1>Happy Birthday,<br><em id="nameFinal"></em> 🎀</h1>
+    <p>Semoga tahun ini lebih lembut, lebih indah, dan lebih baik dari yang kamu bayangkan.</p>
+    <div class="wish" id="wish"></div>
+    <button class="btn gold big" id="wishBtn">Make a wish ✨</button>
+    <button class="back" id="again">↻ lihat lagi</button>
+  </section>
+
+</main>
+
+<div class="nav">
+  <button class="dot active"></button><button class="dot"></button>
+  <button class="dot"></button><button class="dot"></button>
+  <button class="dot"></button><button class="dot"></button>
+</div>
+<button class="music" id="musicBtn">♫</button>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
