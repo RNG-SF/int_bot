@@ -30,4 +30,3 @@ const RNGTheme = (() => {
 
   return { apply, setAccent, loadSaved };
 })();
-    

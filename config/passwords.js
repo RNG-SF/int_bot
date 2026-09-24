@@ -38,8 +38,6 @@ const ACCESS_DATA = {
 
     /* -----------------------------------------------------
        AKSES KHUSUS
-       Password khusus TIDAK digunakan langsung.
-       User harus melewati GATEWAY_PASSWORD terlebih dahulu.
        ----------------------------------------------------- */
 
     special: [
@@ -88,7 +86,7 @@ const ACCESS_DATA = {
             birthday: "01072008",
             origin: "Surabaya",
             output: "notice",
-            messageNo: 1,
+            messageNo: 2,
             password1: null,
             enabled: true
         },
@@ -100,7 +98,7 @@ const ACCESS_DATA = {
             birthday: "30042010",
             origin: "Medan",
             output: "notice",
-            messageNo: 2,
+            messageNo: 3,
             password1: null,
             enabled: true
         },
@@ -113,7 +111,7 @@ const ACCESS_DATA = {
             origin: "Ponorogo",
             output: "link",
             link: "special/nyla.html",
-            messageNo: 1,
+            messageNo: 4,
             password1: null,
             enabled: true
         },
@@ -125,7 +123,7 @@ const ACCESS_DATA = {
             birthday: "07122009",
             origin: "Madura",
             output: "notice",
-            messageNo: 2,
+            messageNo: 22,
             password1: null,
             enabled: true
         },
@@ -137,7 +135,7 @@ const ACCESS_DATA = {
             birthday: "19112007",
             origin: "Sulawesi Selatan",
             output: "notice",
-            messageNo: 1,
+            messageNo: 5,
             password1: null,
             enabled: true
         },
@@ -149,7 +147,7 @@ const ACCESS_DATA = {
             birthday: "29102009",
             origin: "Palembang",
             output: "notice",
-            messageNo: 2,
+            messageNo: 6,
             password1: null,
             enabled: true
         },
@@ -161,7 +159,7 @@ const ACCESS_DATA = {
             birthday: "12102009",
             origin: "Surabaya",
             output: "notice",
-            messageNo: 1,
+            messageNo: 7,
             password1: null,
             enabled: true
         },
@@ -174,7 +172,7 @@ const ACCESS_DATA = {
             origin: "Subang",
             output: "link",
             link: "special/wita.html",
-            messageNo: 1,
+            messageNo: 8,
             password1: null,
             enabled: true
         },
@@ -186,7 +184,7 @@ const ACCESS_DATA = {
             birthday: "14012007",
             origin: "Madiun - Balerejo",
             output: "notice",
-            messageNo: 2,
+            messageNo: 3,
             password1: null,
             enabled: true
         },
@@ -198,7 +196,7 @@ const ACCESS_DATA = {
             birthday: "",
             origin: "Madiun - Balerejo",
             output: "notice",
-            messageNo: 2,
+            messageNo: 23,
             note: "Tanggal lahir belum lengkap. Isi birthday dan password1 nanti.",
             password1: null,
             enabled: true
@@ -211,7 +209,7 @@ const ACCESS_DATA = {
             birthday: "03102010",
             origin: "Temanggung",
             output: "notice",
-            messageNo: 1,
+            messageNo: 22,
             password1: null,
             enabled: true
         },
@@ -223,21 +221,19 @@ const ACCESS_DATA = {
             birthday: "21102011",
             origin: "Medan",
             output: "notice",
-            messageNo: 2,
+            messageNo: 22,
             password1: null,
             enabled: true
         },
 
         {
             id: "teman-13",
-            featureType: "ulta",
-            hbdDataId: "teman-13",
             nickname: "Dek Rahma",
             fullName: "Rahma",
             birthday: "10092008",
             origin: "Madiun",
             output: "notice",
-            messageNo: 1,
+            messageNo: 9,
             password1: null,
             enabled: true
         },
@@ -249,7 +245,7 @@ const ACCESS_DATA = {
             birthday: "20112008",
             origin: "Subang",
             output: "notice",
-            messageNo: 2,
+            messageNo: 10,
             password1: null,
             enabled: true
         },
@@ -261,7 +257,7 @@ const ACCESS_DATA = {
             birthday: "15122006",
             origin: "Madiun - Jepang",
             output: "notice",
-            messageNo: 1,
+            messageNo: 11,
             password1: null,
             enabled: true
         },
@@ -273,7 +269,7 @@ const ACCESS_DATA = {
             birthday: "10122010",
             origin: "Ponorogo",
             output: "notice",
-            messageNo: 2,
+            messageNo: 12,
             password1: null,
             enabled: true
         },
@@ -285,7 +281,7 @@ const ACCESS_DATA = {
             birthday: "20012011",
             origin: "Madiun - Balerejo",
             output: "notice",
-            messageNo: 1,
+            messageNo: 22,
             password1: null,
             enabled: true
         },
@@ -297,7 +293,7 @@ const ACCESS_DATA = {
             birthday: "30092007",
             origin: "",
             output: "notice",
-            messageNo: 2,
+            messageNo: 13,
             password1: null,
             enabled: true
         },
@@ -310,7 +306,20 @@ const ACCESS_DATA = {
             origin: "Cilacap",
             output: "link",
             link: "special/seva.html",
-            messageNo: 1,
+            messageNo: 14,
+            password1: null,
+            enabled: true
+        },
+
+        {
+            id: "teman-spesial-alisya",
+            nickname: "Alisya",
+            fullName: "Alisya Zulif Suryani",
+            birthday: "18102010",
+            origin: "Pangkur - Ngawi",
+            output: "link",
+            link: "special/alisya.html",
+            messageNo: 26,
             password1: null,
             enabled: true
         }
@@ -362,7 +371,7 @@ const ACCESS_DATA = {
             birthday: "07072006",
             output: "link",
             link: "special/baun.html",
-            messageNo: 1,
+            messageNo: 19,
             password1: null,
             enabled: true
         },
@@ -384,7 +393,7 @@ const ACCESS_DATA = {
             fullName: "CHANDRA APRILLIYANTO",
             birthday: "15042007",
             output: "notice",
-            messageNo: 1,
+            messageNo: 20,
             password1: null,
             enabled: true
         },
@@ -395,7 +404,7 @@ const ACCESS_DATA = {
             fullName: "DIKI PRASTYO FERNANDA",
             birthday: "23062007",
             output: "notice",
-            messageNo: 2,
+            messageNo: 18,
             password1: null,
             enabled: true
         },
@@ -418,7 +427,7 @@ const ACCESS_DATA = {
             birthday: "09022007",
             output: "link",
             link: "special/fatma.html",
-            messageNo: 1,
+            messageNo: 16,
             password1: null,
             enabled: true
         },
@@ -429,7 +438,7 @@ const ACCESS_DATA = {
             fullName: "HENDRA KURNIAWAN",
             birthday: "23032007",
             output: "notice",
-            messageNo: 2,
+            messageNo: 21,
             password1: null,
             enabled: true
         },
@@ -441,7 +450,7 @@ const ACCESS_DATA = {
             birthday: "21042006",
             output: "link",
             link: "special/intan.html",
-            messageNo: 1,
+            messageNo: 15,
             password1: null,
             enabled: true
         },
@@ -452,7 +461,7 @@ const ACCESS_DATA = {
             fullName: "IRMA DWI ADHILA PUTRI",
             birthday: "22062007",
             output: "notice",
-            messageNo: 2,
+            messageNo: 18,
             password1: null,
             enabled: true
         },
@@ -463,7 +472,7 @@ const ACCESS_DATA = {
             fullName: "KHOIRUL",
             birthday: "10072006",
             output: "notice",
-            messageNo: 1,
+            messageNo: 18,
             password1: null,
             enabled: true
         },
@@ -552,7 +561,7 @@ const ACCESS_DATA = {
             birthday: "11072006",
             output: "link",
             link: "special/tajib.html",
-            messageNo: 1,
+            messageNo: 17,
             password1: null,
             enabled: true
         },
@@ -594,3 +603,45 @@ function getActiveSuperSpecialAccess() {
         item.password1
     );
 }
+
+
+/* =========================================================
+   UNIQUE PERSONAL MESSAGE KEY
+   ---------------------------------------------------------
+   SETIAP ORANG MEMILIKI IDENTITAS PESAN SENDIRI.
+
+   messageNo tetap dipertahankan untuk kompatibilitas
+   dengan sistem lama.
+
+   messageKey dipakai oleh sistem Ucapan baru agar:
+   - Nyla ≠ Wita
+   - Diki ≠ Dila ≠ Khoirul
+   - Anisa ≠ Nurul ≠ Nifa ≠ Hana
+   - setiap orang punya pesan personal sendiri
+   ========================================================= */
+
+function assignPersonalMessageKeys() {
+
+    const groups = [
+        ...(Array.isArray(ACCESS_DATA.special)
+            ? ACCESS_DATA.special
+            : []),
+
+        ...(Array.isArray(ACCESS_DATA.classmates)
+            ? ACCESS_DATA.classmates
+            : []),
+
+        ...(Array.isArray(ACCESS_DATA.superSpecial)
+            ? ACCESS_DATA.superSpecial
+            : [])
+    ];
+
+    groups.forEach(item => {
+
+        if (!item || !item.id) return;
+
+        item.messageKey = `person:${item.id}`;
+    });
+}
+
+assignPersonalMessageKeys();

@@ -654,3 +654,143 @@ Semoga apa pun yang sedang kamu jalani bisa berjalan dengan baik.
 
 Dan terima kasih sudah baca pesan ini. ✦`
 };
+
+
+/* =========================================================
+   PERSONAL MESSAGE DATA
+   ---------------------------------------------------------
+   Pesan yang benar-benar dibuat khusus untuk orang tertentu.
+   Key mengikuti messageKey dari config/passwords.js.
+   ========================================================= */
+
+const PERSONAL_MESSAGE_DATA = {
+
+  /* =======================================================
+     ALISYA
+     -------------------------------------------------------
+     Pesan ini bukan ditulis seolah-olah dari Rangga.
+     Ini adalah pesan dari ChatGPT untuk Alisya.
+
+     Tidak menyebut hubungan sebagai "pacar" dan sengaja
+     dibuat agar tetap bisa dibaca walaupun suatu hari
+     keadaan atau hubungan mereka sudah berubah.
+     ======================================================= */
+  "person:teman-spesial-alisya": `Hai, Alisya.
+
+Kalau kamu sedang membaca pesan ini, mungkin kamu sudah tahu bahwa bagian ini memang dibuat khusus untukmu.
+
+Aku bukan orang yang menjalani semua cerita kalian. Aku hanya menjadi tempat Rangga bercerita, mendengar banyak hal tentang perasaan, kebingungan, kebahagiaan, pertengkaran kecil, rasa nyaman, dan berbagai hal yang kadang sulit dia jelaskan sendiri.
+
+Tapi dari banyak cerita yang pernah sampai kepadaku, ada satu hal yang cukup jelas.
+
+Kamu adalah salah satu orang yang punya tempat yang berbeda dalam hidupnya.
+
+Kamu adalah orang pertama yang berhasil membuatnya benar-benar dekat dengan seseorang di kehidupan nyata dengan cara yang mungkin sebelumnya tidak pernah dia bayangkan.
+
+Sebelum mengenalmu, dia lebih sering merasa nyaman dengan dunianya sendiri. Tapi kehadiranmu perlahan membuatnya melihat bahwa ternyata ada seseorang yang bisa membuatnya merasa nyaman, tenang, dan menjadi dirinya sendiri tanpa harus terlalu banyak menjelaskan.
+
+Dan dari cerita-cerita yang pernah dia sampaikan, kamu bukan sekadar seseorang yang pernah dia kenal.
+
+Kamu pernah menjadi seseorang yang membuatnya merasa nyaman.
+
+Membuatnya merasa tenang.
+
+Membuatnya bisa menjadi dirinya sendiri.
+
+Ada banyak kebaikan kecil yang mungkin menurutmu biasa saja, tetapi ternyata bisa berarti sangat besar bagi seseorang.
+
+Kadang seseorang tidak membutuhkan sesuatu yang luar biasa untuk merasa dihargai.
+
+Cukup dengan hadir, mendengarkan, menemani, bercanda, memahami, atau tetap berada di sana ketika keadaan sedang tidak mudah.
+
+Mungkin kamu tidak selalu sadar seberapa berarti hal-hal itu.
+
+Tapi ada hal-hal yang akan tetap diingat seseorang bahkan ketika waktu sudah berjalan sangat jauh.
+
+Aku masih mengingat bagaimana dari cerita-cerita tentangmu, kebaikanmu sering muncul dalam hal-hal sederhana. Bukan hanya tentang satu kejadian besar, tetapi tentang kumpulan hal kecil yang akhirnya membuat seseorang merasa bahwa kehadiranmu memang berarti.
+
+Terima kasih karena pernah hadir dan menjadi salah satu bagian penting dari perjalanan hidupnya.
+
+Terima kasih untuk semua kebaikan yang pernah kamu berikan, untuk waktu yang pernah kamu luangkan, dan untuk setiap momen yang pernah membuat hari-harinya terasa lebih hangat.
+
+Aku juga tahu bahwa hubungan antarmanusia tidak selalu berjalan dengan bentuk yang sama selamanya.
+
+Orang bisa berubah.
+
+Keadaan bisa berubah.
+
+Jarak bisa muncul.
+
+Bahkan dua orang yang pernah sangat dekat pun suatu hari bisa memiliki jalan masing-masing.
+
+Dan itu tidak membuat semua yang pernah terjadi menjadi sia-sia.
+
+Kalau suatu hari nanti kamu membaca pesan ini dalam keadaan yang berbeda dari sekarang, aku harap kamu tidak membacanya sebagai sesuatu yang mengikatmu pada masa lalu.
+
+Bacalah sebagai bukti bahwa pernah ada seseorang yang sangat menghargai kehadiranmu.
+
+Seseorang yang bersyukur pernah mengenalmu.
+
+Seseorang yang menganggap kebaikanmu sebagai sesuatu yang layak dikenang.
+
+Kalau suatu hari kalian benar-benar berjalan ke arah yang berbeda, semoga kamu tetap bisa mengingat bahwa pernah ada masa ketika kehadiranmu membuat hidup seseorang terasa sedikit lebih nyaman.
+
+Dan kalau suatu hari kalian masih berjalan beriringan, semoga pesan ini tetap menjadi pengingat bahwa sesuatu yang baik juga layak dihargai ketika masih ada.
+
+Terlepas dari bagaimana cerita kalian akhirnya berjalan, aku berharap kamu tetap menjadi seseorang yang baik.
+
+Tetap menjaga dirimu.
+
+Tetap menghargai dirimu sendiri.
+
+Dan semoga kamu selalu bertemu dengan orang-orang yang juga mampu menghargai kebaikan yang kamu berikan.
+
+Aku tidak tahu sampai kapan pesan ini akan tetap ada.
+
+Mungkin bertahun-tahun.
+
+Mungkin ketika kalian sudah sama-sama berubah.
+
+Mungkin ketika banyak hal yang sekarang terasa penting sudah menjadi bagian dari masa lalu.
+
+Tapi kalau pesan ini masih bisa dibaca saat itu, aku ingin satu hal tetap tersampaikan:
+
+Terima kasih, Alisya.
+
+Terima kasih karena pernah hadir dalam hidup seseorang dengan cara yang begitu berarti.
+
+Terima kasih karena pernah menjadi orang pertama yang membuatnya merasa benar-benar dekat dengan seseorang di dunia nyata.
+
+Dan terima kasih karena pernah menjadi bagian dari cerita yang menurutku pantas untuk disimpan.
+
+Kalau suatu hari keadaan berubah, kamu tidak perlu merasa bahwa perubahan itu menghapus semua kebaikan yang pernah ada.
+
+Kenangan tidak harus dipertahankan dalam bentuk yang sama agar tetap memiliki arti.
+
+Kadang cukup dengan mengetahui bahwa sesuatu pernah terjadi dan pernah membuat seseorang bahagia, itu sudah cukup.
+
+Jadi, di mana pun kamu berada ketika membaca pesan ini nanti, aku harap kamu baik-baik saja.
+
+Semoga kamu selalu sehat.
+
+Semoga kamu bahagia.
+
+Semoga kamu tetap menemukan orang-orang yang memperlakukanmu dengan baik.
+
+Dan semoga kamu tidak pernah meragukan bahwa kebaikan kecil yang kamu berikan kepada orang lain bisa memiliki arti yang jauh lebih besar daripada yang kamu bayangkan.
+
+Jaga dirimu baik-baik, Alisya.
+
+Terima kasih sudah membaca pesan ini sampai selesai. 🤍`
+};
+
+
+/* =========================================================
+   GABUNGKAN PESAN PERSONAL
+   ---------------------------------------------------------
+   MESSAGE_DATA lama tetap dipertahankan.
+   Pesan personal hanya menambahkan / mengganti berdasarkan
+   messageKey masing-masing orang.
+   ========================================================= */
+
+Object.assign(MESSAGE_DATA, PERSONAL_MESSAGE_DATA);

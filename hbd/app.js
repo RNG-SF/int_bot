@@ -29,30 +29,10 @@ const birthdayPeople = Array.isArray(window.HBD_DATA)
 
 const allPeople = birthdayPeople;
 
-const occurrenceForTarget = (p, year) => {
-    const d = dateParts(String(p.birthday));
-    return new Date(year, d.month - 1, d.day, 0, 0, 0, 0);
-};
-const targetForNow = () => {
-    const nowForTarget = new Date();
-    if (!allPeople.length) return null;
-    const requested =
-        allPeople.find(p => requestedId && String(p.id) === requestedId) ||
-        allPeople.find(p => requestedBirthday && String(p.birthday) === requestedBirthday);
-    if (requested) {
-        const d = occurrenceForTarget(requested, nowForTarget.getFullYear());
-        const late = nowForTarget.getTime() - d.getTime();
-        if (late < 0 || late <= 24 * 60 * 60 * 1000) return requested;
-    }
-    const candidates = allPeople.map(p => {
-        let d = occurrenceForTarget(p, nowForTarget.getFullYear());
-        if (d < nowForTarget) d = occurrenceForTarget(p, nowForTarget.getFullYear() + 1);
-        return {p, d};
-    }).sort((a,b) => a.d - b.d);
-    return candidates[0]?.p || allPeople[0];
-};
-
-const person = targetForNow();
+const person =
+    allPeople.find(p => requestedId && String(p.id) === requestedId) ||
+    allPeople.find(p => requestedBirthday && String(p.birthday) === requestedBirthday) ||
+    allPeople[0];
 
 const pad = n => String(n).padStart(2,"0");
 const dateParts = code => ({
@@ -97,13 +77,6 @@ const countdownParts = ms => {
     return {days,hours,minutes,seconds:s};
 };
 const escapeHtml = v => String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-const maskName = name => {
-    const s = String(name || "seseorang").trim();
-    if (s.length <= 2) return s[0] + "•";
-    if (s.length <= 4) return s[0] + "••" + s.slice(-1);
-    return s[0] + "***" + s.slice(-1).toUpperCase();
-};
-const displayName = `${maskName(person?.nama || person?.nickname || person?.fullName)}${person?.nickname ? ` (${person.nickname})` : ""}`;
 
 const screens = [...document.querySelectorAll(".screen")];
 function go(id){
@@ -130,11 +103,6 @@ function renderLetter(){
 
 function liveClock(){
     const now=new Date();
-    const freshTarget = targetForNow();
-    if (freshTarget && person && String(freshTarget.id) !== String(person.id)) {
-        location.replace(`index.html?birthday=${encodeURIComponent(freshTarget.birthday)}&id=${encodeURIComponent(freshTarget.id || "")}`);
-        return;
-    }
     qs("#liveDate").textContent=now.toLocaleDateString("id-ID",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
     qs("#liveTime").textContent=now.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
     const bd=currentBirthday(person);
@@ -156,8 +124,12 @@ function liveClock(){
         openBtn.disabled=false;
         openBtn.textContent="Buka suratnya 🤍";
         qs("#lockTitle").textContent="Selamat ulang tahun. 🎂";
-        qs("#lockText").textContent=`Surat untuk ${displayName} sudah siap.`;
-        delay.textContent="";
+        qs("#lockText").textContent=`Surat untuk ${targetName} sudah siap.`;
+        const late=now-bd;
+        if(late>0){
+            const c=countdownParts(late);
+            delay.textContent=`Status: - · terlambat +${c.days} hari ${c.hours} jam ${c.minutes} menit`;
+        }else delay.textContent="";
     }
 }
 setInterval(liveClock,1000); liveClock();

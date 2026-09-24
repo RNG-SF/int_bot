@@ -16,7 +16,7 @@ const HBD_24H_ONLY = false; // testing; set true for production 24h window // FA
         p &&
         p.enabled !== false &&
         (p.featureType === "ulta" || p.hbdEnabled === true) &&
-        /^\d{8}$/.test(String(p.birthday || ""))
+        /^\\d{8}$/.test(String(p.birthday || ""))
     );
 
     const parts = code => ({
@@ -56,7 +56,7 @@ const HBD_24H_ONLY = false; // testing; set true for production 24h window // FA
         const s = String(name || "seseorang").trim();
         if (s.length <= 2) return s[0] + "•";
         if (s.length <= 4) return s[0] + "••" + s.slice(-1);
-        return s[0] + "***" + s.slice(-1).toUpperCase();
+        return s.slice(0, 2) + "•••" + s.slice(-1);
     };
 
     const nearest = (people, now) => {
@@ -80,17 +80,8 @@ const HBD_24H_ONLY = false; // testing; set true for production 24h window // FA
             return;
         }
 
-        // Birthday may remain the active target for at most 24 hours.
-        // After that, move automatically to the next birthday.
-        const active = eligible
-            .map(p => ({p, date: occurrence(p, now.getFullYear())}))
-            .filter(x => {
-                const late = now.getTime() - x.date.getTime();
-                return late >= 0 && late <= 24 * 60 * 60 * 1000;
-            })
-            .sort((a,b) => a.date - b.date);
-
-        const target = active[0]?.p || nearest(eligible, now)?.p;
+        const active = eligible.filter(p => occurrence(p, now.getFullYear()).getTime() <= now.getTime());
+        const target = active[0] || nearest(eligible, now)?.p;
         if (!target) return;
 
         let wrap = document.querySelector("#rngHbdLauncher");
@@ -108,7 +99,7 @@ const HBD_24H_ONLY = false; // testing; set true for production 24h window // FA
             <button class="hbd-launch-button" type="button">
                 <span class="hbd-launch-icon">🎁</span>
                 <span class="hbd-launch-copy">
-                    <b>Ucapan ulang tahun untuk ${esc(mask(target.fullName || target.nickname))}${target.nickname ? ` (${esc(target.nickname)})` : ""}</b>
+                    <b>Ucapan ulang tahun untuk ${esc(mask(target.nickname || target.fullName))}</b>
                     <small>${active.length ? "🎉 Waktunya sudah tiba" : `00:00 · ${remaining.days}h ${remaining.hours}j ${remaining.minutes}m ${remaining.seconds}d`}</small>
                     <em>siapapun, jangan pencet ini kalau bukan yang bersangkutan...</em>
                 </span>
