@@ -9127,8 +9127,11 @@ if(
 /* =========================================================
    RNG SF — HBD LAUNCHER
    ---------------------------------------------------------
-   HBD sekarang punya halaman sendiri di hbd/index.html.
-   Index utama hanya menjadi pintu masuk + countdown.
+   Menampilkan ULTA TERDEKAT dari seluruh data akses, bukan
+   hanya dari daftar surat HBD yang sudah dibuat.
+   Kalau surat untuk orang tersebut belum tersedia, kartu tetap
+   menunjukkan siapa yang ulang tahun terdekat dan menjelaskan
+   bahwa suratnya belum disiapkan.
    ========================================================= */
 (function(){
     const enabled = typeof window.rngFeatureEnabled === "function"
@@ -9138,8 +9141,21 @@ if(
     const list = document.querySelector("#portalList");
     if(!list || !enabled) return;
 
-    const data = Array.isArray(window.HBD_DATA) ? window.HBD_DATA : [];
-    const valid = data.filter(p => p && p.enabled !== false && /^\d{8}$/.test(String(p.ulta || p.birthday || "")));
+    const accessDatabase = typeof ACCESS_DATA !== "undefined" ? ACCESS_DATA : {};
+    const accessGroups = [
+        ...(Array.isArray(accessDatabase.special) ? accessDatabase.special : []),
+        ...(Array.isArray(accessDatabase.classmates) ? accessDatabase.classmates : []),
+        ...(Array.isArray(accessDatabase.superSpecial) ? accessDatabase.superSpecial : [])
+    ];
+
+    const hbdLetters = Array.isArray(window.HBD_DATA) ? window.HBD_DATA : [];
+
+    const valid = accessGroups.filter(p =>
+        p &&
+        p.enabled !== false &&
+        /^\d{8}$/.test(String(p.birthday || p.ulta || ""))
+    );
+
     if(!valid.length) return;
 
     const wrap=document.createElement("div");
@@ -9152,32 +9168,39 @@ if(
     btn.type="button";
     wrap.appendChild(btn);
 
-    function codeOf(p){ return String(p.ulta || p.birthday); }
+    function codeOf(p){ return String(p.birthday || p.ulta || ""); }
+
     function birthdayThisYear(p,year){
         const c=codeOf(p);
         return new Date(year,Number(c.slice(2,4))-1,Number(c.slice(0,2)),0,0,0,0);
     }
-    function windowOf(p,now){
-        const birthday=birthdayThisYear(p,now.getFullYear());
-        const start=new Date(birthday.getTime() - Number(window.RNG_CONTROL?.hbd?.startHoursBeforeBirthday || 0)*3600000);
-        const end=new Date(birthday.getTime() + Number(window.RNG_CONTROL?.hbd?.endHoursAfterBirthday || 0)*3600000);
-        return {birthday,start,end};
-    }
-    function scheduleEnabled(){
-        return typeof window.rngHbdScheduleEnabled === "function"
-            ? window.rngHbdScheduleEnabled()
-            : false;
-    }
-    function allowed(p,now){
-        if(!scheduleEnabled()) return true;
-        const w=windowOf(p,now);
-        return now>=w.start && now<=w.end;
-    }
+
     function nextBirthday(p,now){
         let d=birthdayThisYear(p,now.getFullYear());
         if(d < now) d=birthdayThisYear(p,now.getFullYear()+1);
         return d;
     }
+
+    function windowOfYear(p,year){
+        const birthday=birthdayThisYear(p,year);
+        const start=new Date(birthday.getTime() - Number(window.RNG_CONTROL?.hbd?.startHoursBeforeBirthday || 0)*3600000);
+        const end=new Date(birthday.getTime() + Number(window.RNG_CONTROL?.hbd?.endHoursAfterBirthday || 0)*3600000);
+        return {birthday,start,end};
+    }
+
+    function scheduleEnabled(){
+        return typeof window.rngHbdScheduleEnabled === "function"
+            ? window.rngHbdScheduleEnabled()
+            : false;
+    }
+
+    function allowed(p,now){
+        if(!scheduleEnabled()) return true;
+        const current=windowOfYear(p,now.getFullYear());
+        const next=windowOfYear(p,now.getFullYear()+1);
+        return (now>=current.start && now<=current.end) || (now>=next.start && now<=next.end);
+    }
+
     function diff(ms){
         const total=Math.max(0,Math.floor(ms/1000));
         return {
@@ -9187,6 +9210,7 @@ if(
             seconds:total%60
         };
     }
+
     function masked(name){
         name=String(name||"seseorang");
         if(name.length<=2) return name[0]+"*";
@@ -9194,36 +9218,69 @@ if(
         return name.slice(0,2)+"*".repeat(Math.max(2,name.length-3))+name.at(-1);
     }
 
+    function findLetter(person){
+        const id=String(person?.id || "");
+        const code=codeOf(person);
+        return hbdLetters.find(p =>
+            p &&
+            p.enabled !== false &&
+            (String(p.id || "") === id || String(p.ulta || p.birthday || "") === code)
+        ) || null;
+    }
+
+    function nearest(list,now){
+        let best=null;
+        for(const p of list){
+            const date=nextBirthday(p,now);
+            const delta=date-now;
+            if(!best || delta<best.delta){
+                best={person:p,date,delta};
+            }
+        }
+        return best;
+    }
+
     btn.onclick=()=>{
         const now=new Date();
         const candidates=valid.filter(p=>allowed(p,now));
-        if(!candidates.length) return;
-        // Untuk sekarang setiap entry HBD membuka halaman HBD sendiri.
-        const target=candidates[0];
-        const id=encodeURIComponent(String(target.id || ""));
+        const target=nearest(candidates.length ? candidates : valid,now);
+        if(!target) return;
+
+        const letter=findLetter(target.person);
+        if(!letter){
+            btn.animate(
+                [
+                    {transform:"scale(1)"},
+                    {transform:"scale(.985)"},
+                    {transform:"scale(1)"}
+                ],
+                {duration:220}
+            );
+            return;
+        }
+
+        const id=encodeURIComponent(String(letter.id || target.person.id || ""));
         window.location.href=`hbd/index.html?id=${id}`;
     };
 
     function refresh(){
         const now=new Date();
-        const target=valid.find(p=>allowed(p,now)) || valid[0];
-        const active=valid.filter(p=>allowed(p,now));
-        const name=target.nama || target.nickname || target.fullName || "seseorang";
+        const candidates=valid.filter(p=>allowed(p,now));
+        const target=nearest(candidates.length ? candidates : valid,now);
+        if(!target) return;
+
+        const person=target.person;
+        const letter=findLetter(person);
+        const name=person.nickname || person.nama || person.fullName || "seseorang";
+        const x=diff(target.date-now);
 
         wrap.classList.remove("rngHbdHidden");
-        btn.disabled=!active.length;
+        btn.disabled=false;
         btn.innerHTML=`
-            <div class="hbdTitle">🎂 Ucapan ulang tahun untuk ${masked(name)}</div>
-            <div class="hbdCountdown">${active.length ? "✦ Surat HBD tersedia — buka halaman khusus" : "Belum masuk waktu surat"}</div>
-            <div class="hbdWarning">Halaman HBD dipisahkan dari index utama dan akan mengikat sesi ke orang yang berhasil login.</div>
+            <div class="hbdTitle">🎂 Ucapan ulang tahun terdekat untuk ${masked(name)}</div>
+            <div class="hbdCountdown">✦ ${x.days}h ${String(x.hours).padStart(2,"0")}j ${String(x.minutes).padStart(2,"0")}m ${String(x.seconds).padStart(2,"0")}d lagi</div>
+            <div class="hbdWarning">${letter ? "Surat HBD tersedia — buka halaman khusus" : "Orangnya sudah terdeteksi, tetapi surat HBD belum disiapkan."}</div>
         `;
-
-        if(!active.length && scheduleEnabled()){
-            const next=nextBirthday(target,now);
-            const x=diff(next-now);
-            btn.querySelector(".hbdCountdown").textContent=
-                `Menuju waktu berikutnya · ${x.days}h ${String(x.hours).padStart(2,"0")}j ${String(x.minutes).padStart(2,"0")}m`;
-        }
     }
 
     refresh();

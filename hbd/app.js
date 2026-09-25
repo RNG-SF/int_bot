@@ -399,7 +399,10 @@ function renderFinal(){
     const methods=CONTROL.hbd?.responseMethods || {};
     qs("#whatsappBtn").classList.toggle("hidden",methods.whatsapp===false);
     qs("#emailBtn").classList.toggle("hidden",methods.email===false || !String(CONTROL.contact?.email||"").trim());
-    qs("#tiktokBtn").classList.toggle("hidden",methods.tiktok===false);
+    qs("#gmailBtn").classList.toggle("hidden",methods.gmail===false || !String(CONTROL.contact?.email||"").trim());
+    qs("#tiktokBtn").classList.toggle("hidden",methods.tiktok===false || !String(CONTROL.contact?.tiktok||"").trim());
+    qs("#instagramBtn").classList.toggle("hidden",methods.instagram===false || !String(CONTROL.contact?.instagram||"").trim());
+    qs("#telegramBtn").classList.toggle("hidden",methods.telegram===false || !String(CONTROL.contact?.telegram||"").trim());
     qs("#copyBtn").classList.toggle("hidden",methods.copy===false);
 }
 
@@ -416,11 +419,35 @@ qs("#emailBtn").onclick=()=>{
     window.location.href=`mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(responseText())}`;
 };
 
+qs("#gmailBtn").onclick=()=>{
+    const email=String(CONTROL.contact?.email || "").trim();
+    if(!email) return;
+    const subject=`Jawaban setelah membaca surat ulang tahun untuk ${targetName}`;
+    const body=responseText();
+    const url=`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(url,"_blank");
+};
+
 qs("#tiktokBtn").onclick=async()=>{
     const ok=await copyText(responseText());
-    const url=String(CONTROL.contact?.tiktok || "https://www.tiktok.com/").trim();
+    const url=String(CONTROL.contact?.tiktok || "").trim();
     qs("#tiktokBtn").textContent=ok?"Pesan tersalin ✓ Buka TikTok":"Salin gagal — coba lagi";
     if(ok && url) window.open(url,"_blank");
+};
+
+qs("#instagramBtn").onclick=async()=>{
+    const ok=await copyText(responseText());
+    const url=String(CONTROL.contact?.instagram || "").trim();
+    qs("#instagramBtn").textContent=ok?"Pesan tersalin ✓ Buka Instagram":"Salin gagal — coba lagi";
+    if(ok && url) window.open(url,"_blank");
+};
+
+qs("#telegramBtn").onclick=async()=>{
+    const url=String(CONTROL.contact?.telegram || "").trim();
+    if(!url) return;
+    const ok=await copyText(responseText());
+    qs("#telegramBtn").textContent=ok?"Pesan tersalin ✓ Buka Telegram":"Salin gagal — coba lagi";
+    if(ok) window.open(url,"_blank");
 };
 
 qs("#copyBtn").onclick=async()=>{

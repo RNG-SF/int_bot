@@ -1,0 +1,27 @@
+RNG SF — HBD FIX / CONTACT UPDATE
+Tanggal: 26 September 2026
+
+PERBAIKAN:
+1. Kartu HBD di index sekarang mencari ULTA TERDEKAT dari ACCESS_DATA, bukan hanya dari HBD_DATA.
+2. Pada 26 September 2026, Nyla (29 September 2010) menjadi penerima ULTA terdekat.
+3. Jika penerima terdekat belum memiliki surat HBD di config/birthday.js, kartu tetap menampilkan orang tersebut dan menjelaskan bahwa surat belum disiapkan.
+4. Window jadwal HBD dibuat aman untuk tanggal ulang tahun yang sedang berlangsung maupun window tahun berikutnya.
+5. HBD response sekarang memiliki WhatsApp, Email, Gmail, TikTok, Instagram, Telegram, dan Copy.
+6. Gmail memakai halaman compose Gmail dengan penerima, subjek, dan jawaban sudah diisi. Pengguna tetap menekan tombol Kirim di Gmail.
+7. Instagram/TikTok/Telegram: pesan disalin terlebih dahulu, lalu profil/tujuan dibuka. Instagram dan Telegram tidak bisa dipaksa mengirim DM langsung dari GitHub Pages.
+8. Kontak yang dipasang:
+   WhatsApp: 085745596459
+   Email/Gmail: sofyantorangga028@gmail.com
+   TikTok: @rng_sf
+   Instagram: https://www.instagram.com/rng_sf?stkn=MXV4MXE1cHc2bWIz
+   Telegram: https://t.me/rng_sf25
+
+FILE YANG DIUBAH:
+- index.html
+- config/control.js
+- hbd/index.html
+- hbd/app.js
+- hbd/hbd-launcher.js (perbaikan validasi kode tanggal)
+
+CATATAN:
+Surat HBD Nyla belum dibuat karena isi surat khusus Nyla belum diberikan. Sistem tidak mengarang isi surat tersebut.

@@ -64,7 +64,10 @@ const RNG_CONTROL = {
         responseMethods: {
             whatsapp: true,
             email: true,
+            gmail: true,
             tiktok: true,
+            instagram: true,
+            telegram: true,
             copy: true
         }
     },
@@ -74,14 +77,10 @@ const RNG_CONTROL = {
        ========================= */
     contact: {
         whatsapp: "6285745596459",
-
-        // Isi kalau nanti ingin tombol Email langsung membuka
-        // alamat email tertentu.
-        email: "",
-
-        // Isi dengan link profil TikTok jika sudah ada.
-        // Pesan akan disalin dulu, kemudian link ini dibuka.
-        tiktok: ""
+        email: "sofyantorangga028@gmail.com",
+        tiktok: "https://www.tiktok.com/@rng_sf",
+        instagram: "https://www.instagram.com/rng_sf?stkn=MXV4MXE1cHc2bWIz",
+        telegram: "https://t.me/rng_sf25"
     },
 
     /* =========================

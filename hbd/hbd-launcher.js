@@ -16,7 +16,7 @@ const HBD_24H_ONLY = false; // testing; set true for production 24h window // FA
         p &&
         p.enabled !== false &&
         (p.featureType === "ulta" || p.hbdEnabled === true) &&
-        /^\\d{8}$/.test(String(p.birthday || ""))
+        /^\d{8}$/.test(String(p.birthday || ""))
     );
 
     const parts = code => ({
