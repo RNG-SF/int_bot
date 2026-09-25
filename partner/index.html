@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#070a12">
+  <title>RNG Partner — Demo Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">R</span><div><strong>RNG PARTNER</strong><small>Referral · Creator · Rewards</small></div></div>
+      <span class="demo-badge">DEMO MODE</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div><p class="eyebrow">PARTNER CENTER</p><h1>Halo, <span id="partnerName">Partner</span>.</h1><p class="muted">Kelola referral, konten, reward, dan pencairanmu.</p></div>
+        <span class="status-pill"><i></i><span id="partnerStatus">Aktif</span></span>
+      </section>
+
+      <div class="notice"><b>Prototype aman:</b> data di halaman ini hanya tersimpan di browser. Jangan gunakan untuk saldo atau pembayaran nyata sebelum backend, autentikasi, dan database dihubungkan.</div>
+
+      <section id="view-overview" class="view active">
+        <div class="stats-grid">
+          <article class="stat-card"><span>Valid orders</span><strong id="statOrders">0</strong><small>order tervalidasi</small></article>
+          <article class="stat-card"><span>Total komisi</span><strong id="statCommission">Rp0</strong><small>tercatat di ledger demo</small></article>
+          <article class="stat-card"><span>Reward creator</span><strong id="statReward">Rp0</strong><small>hasil review demo</small></article>
+          <article class="stat-card"><span>Saldo tersedia</span><strong id="statAvailable">Rp0</strong><small>siap diajukan</small></article>
+        </div>
+        <div class="two-col">
+          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">REFERRAL LINK</p><h2>Bagikan link kamu</h2></div><span class="icon">↗</span></div><div class="ref-link" id="refLink"></div><button class="button primary" id="copyReferral">Salin referral link</button><p class="helper">Klik tidak menghasilkan komisi. Komisi hanya dibuat dari order yang valid.</p></article>
+          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">ACTIVITY</p><h2>Aktivitas terbaru</h2></div><button class="text-button" data-view="activity">Lihat semua</button></div><div id="recentActivity" class="activity-list"></div></article>
+        </div>
+      </section>
+
+      <section id="view-referral" class="view"><div class="section-title"><div><p class="eyebrow">REFERRAL / PROMOTOR</p><h2>Performa referral</h2></div></div><div class="stats-grid compact"><article class="stat-card"><span>Total klik</span><strong id="refClicks">0</strong></article><article class="stat-card"><span>Attribution aktif</span><strong id="refAttributions">0</strong></article><article class="stat-card"><span>Conversion</span><strong id="refConversion">0%</strong></article></div><div class="panel table-panel"><h2>Komisi</h2><div class="table-wrap"><table><thead><tr><th>Order</th><th>Campaign</th><th>Transaksi</th><th>Komisi</th><th>Status</th></tr></thead><tbody id="commissionRows"></tbody></table></div></div></section>
+
+      <section id="view-creator" class="view"><div class="section-title"><div><p class="eyebrow">CREATOR</p><h2>Konten & reward</h2></div><button class="button primary" id="newSubmission">Ajukan konten</button></div><div class="panel"><p class="helper top-helper">Metric yang kamu masukkan belum dianggap terverifikasi. Submission baru akan berstatus review sampai diperiksa.</p><div id="submissionList" class="submission-list"></div></div></section>
+
+      <section id="view-withdrawals" class="view"><div class="section-title"><div><p class="eyebrow">WITHDRAWAL</p><h2>Pencairan</h2></div></div><div class="balance-card"><span>Saldo tersedia</span><strong id="withdrawBalance">Rp0</strong><p>Saldo pending dan paid dicatat terpisah dalam sistem production.</p></div><div class="panel withdrawal-panel"><label for="withdrawAmount">Jumlah pencairan</label><div class="amount-input"><span>Rp</span><input id="withdrawAmount" type="number" min="10000" step="1000" placeholder="10000"></div><label for="withdrawMethod">Metode</label><select id="withdrawMethod"><option>Transfer bank</option><option>E-wallet</option></select><button class="button primary" id="requestWithdrawal">Ajukan pencairan</button><p class="helper">Demo saja: request tidak dikirim ke penyedia pembayaran.</p></div><div class="panel"><h2>Riwayat pencairan</h2><div id="withdrawalList" class="activity-list"></div></div></section>
+
+      <section id="view-activity" class="view"><div class="section-title"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Aktivitas akun</h2></div></div><div class="panel"><div id="activityList" class="activity-list"></div></div></section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigasi partner"><button class="nav-item active" data-view="overview">⌂<span>Overview</span></button><button class="nav-item" data-view="referral">↗<span>Referral</span></button><button class="nav-item" data-view="creator">✦<span>Creator</span></button><button class="nav-item" data-view="withdrawals">₿<span>Saldo</span></button><button class="nav-item" data-view="activity">☷<span>Activity</span></button></nav>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
