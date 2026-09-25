@@ -6,8 +6,7 @@
 <meta name="theme-color" content="#120b18">
 <title>Birthday Letter ✦</title>
 <link rel="stylesheet" href="style.css">
-<script src="../config/passwords.js"></script>
-<script src="../config/messages.js"></script>
+<script src="../config/control.js"></script>
 <script src="../config/birthday.js"></script>
 <script src="config.js"></script>
 </head>
@@ -50,10 +49,10 @@
     <section class="screen" id="screen-code">
         <div class="card">
             <div class="mini-icon">🔐</div>
-            <div class="eyebrow">SEBELUM MASUK</div>
+            <div class="eyebrow">PINTU PRIBADI</div>
             <h2>Ini buat kamu, kan?</h2>
-            <p>Masukkan kode ulang tahunmu dulu. Nggak usah buru-buru hehe.</p>
-            <input id="birthdayCode" inputmode="numeric" maxlength="8" placeholder="DDMMYYYY" autocomplete="off">
+            <p>Masukkan kode pribadi 8 angka untuk memastikan surat ini memang untukmu.</p>
+            <input id="birthdayCode" inputmode="numeric" maxlength="8" placeholder="Kode pribadi" autocomplete="off">
             <button class="main-btn" id="verifyBtn">Buka surat</button>
             <div class="error" id="codeError"></div>
         </div>
@@ -125,8 +124,24 @@
             <h2>Terima kasih sudah membaca.</h2>
             <p id="finalText">Semoga ada sedikit bagian dari halaman ini yang tinggal di ingatanmu.</p>
             <div class="summary" id="summary"></div>
-            <button class="wa-btn" id="whatsappBtn">Kirim jawabanku ke WhatsApp 💬</button>
+            <div class="response-actions">
+                <button class="wa-btn" id="whatsappBtn">Kirim jawabanku ke WhatsApp 💬</button>
+                <button class="main-btn" id="emailBtn">Kirim lewat Email ✉️</button>
+                <button class="main-btn" id="tiktokBtn">Salin untuk TikTok 🎵</button>
+                <button class="main-btn" id="copyBtn">Salin Pesan 📋</button>
+            </div>
             <small class="wa-note">Pesannya sudah disiapkan. Kamu tetap yang menekan kirim.</small>
+        </div>
+    </section>
+
+    <section class="screen" id="session-lock">
+        <div class="card session-card">
+            <div class="wish-glow">🔒</div>
+            <div class="eyebrow">SESSION LOCKED</div>
+            <h2 id="sessionLockTitle">Sesi ini sudah terikat.</h2>
+            <p id="sessionLockText">Browser ini sudah terdaftar pada satu ucapan.</p>
+            <button class="main-btn hidden" id="debugResetSession">Reset sesi developer</button>
+            <button class="main-btn" onclick="location.href='../index.html'">Kembali ke halaman utama</button>
         </div>
     </section>
 </main>

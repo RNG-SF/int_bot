@@ -1,5 +1,5 @@
 const HBD_DATA = [{
-  id: "special-20",
+  id: "teman-spesial-alisya",
   featureType: "ulta",
   nama: "Alisya Zulif Suryani",
   ulta: "18102010",

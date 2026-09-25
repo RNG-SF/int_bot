@@ -92,3 +92,8 @@ p{color:var(--muted);line-height:1.65;margin:0 auto 18px;max-width:520px}
  .card{padding:28px 18px}
  .letter{font-size:15px}
 }
+
+.response-actions{display:grid;gap:10px;margin-top:18px}
+.response-actions .main-btn,.response-actions .wa-btn{width:100%;display:block}
+.session-card{border-color:rgba(232,199,123,.22);box-shadow:0 25px 80px #0007,0 0 45px rgba(232,199,123,.08)}
+.mini-icon{font-size:42px;margin-bottom:8px;filter:drop-shadow(0 0 18px rgba(241,155,197,.35))}

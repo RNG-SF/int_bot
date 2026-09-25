@@ -3067,73 +3067,6 @@ body.lightweight *{
 .hbdTitle{font-weight:700;font-size:15px}
 .hbdCountdown{font-size:13px;margin-top:5px;opacity:.88}
 .hbdWarning{font-size:11px;margin-top:7px;opacity:.66;line-height:1.4}
-.rngHbdModal{
-    position:fixed;inset:0;z-index:99999;display:none;
-    align-items:center;justify-content:center;padding:18px;
-    background:rgba(5,3,12,.72);backdrop-filter:blur(12px);
-}
-.rngHbdModal.show{display:flex}
-.rngHbdCard{
-    width:min(560px,100%);max-height:90vh;overflow:auto;
-    border:1px solid rgba(255,255,255,.14);border-radius:26px;
-    padding:24px;background:linear-gradient(160deg,rgba(26,17,38,.96),rgba(12,10,21,.97));
-    box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 60px rgba(255,105,180,.10);
-    color:#fff;
-}
-.rngHbdEnvelope{
-    margin:12px auto 22px;width:min(340px,100%);height:210px;
-    position:relative;border-radius:18px;overflow:hidden;
-    background:linear-gradient(145deg,#21162a,#3a1d38);
-    border:1px solid rgba(255,255,255,.13);
-    box-shadow:0 20px 55px rgba(0,0,0,.45),0 0 35px rgba(255,105,180,.14);
-}
-.rngHbdEnvelope:before{
-    content:"";position:absolute;inset:0;
-    background:linear-gradient(135deg,transparent 49%,rgba(255,255,255,.08) 50%,transparent 51%),
-               linear-gradient(225deg,transparent 49%,rgba(255,255,255,.05) 50%,transparent 51%);
-}
-.rngHbdFlap{
-    position:absolute;left:0;right:0;top:0;height:112px;
-    background:linear-gradient(145deg,#4a2346,#28172e);
-    clip-path:polygon(0 0,100% 0,50% 100%);
-    transform-origin:top;transition:.8s ease;z-index:3;
-}
-.rngHbdEnvelope.open .rngHbdFlap{transform:rotateX(180deg);opacity:.12}
-.rngHbdSeal{
-    position:absolute;z-index:5;left:50%;top:52%;transform:translate(-50%,-50%);
-    width:58px;height:58px;border-radius:50%;
-    display:grid;place-items:center;font-size:25px;
-    background:radial-gradient(circle,#ffd88a,#9e5a48);
-    box-shadow:0 0 28px rgba(255,215,120,.45);
-    cursor:pointer;
-}
-.rngHbdEnvelope.open .rngHbdSeal{opacity:0;pointer-events:none}
-.rngHbdLetter{
-    position:absolute;z-index:2;left:10%;right:10%;top:18px;height:175px;
-    border-radius:12px;background:#fff9ef;color:#382638;
-    padding:18px;transform:translateY(85px);transition:1s ease;
-    overflow:auto;font-size:13px;line-height:1.65;
-}
-.rngHbdEnvelope.open .rngHbdLetter{transform:translateY(0)}
-.rngHbdInput{
-    width:100%;box-sizing:border-box;padding:13px 14px;border-radius:14px;
-    border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);
-    color:#fff;outline:none;margin-top:10px;
-}
-.rngHbdAction{
-    width:100%;border:0;border-radius:14px;padding:13px 16px;margin-top:10px;
-    background:linear-gradient(135deg,#e77eb4,#d7a75e);color:#21131f;font-weight:800;cursor:pointer;
-}
-.rngHbdSecondary{
-    width:100%;border:1px solid rgba(255,255,255,.12);border-radius:14px;
-    padding:11px 16px;margin-top:9px;background:rgba(255,255,255,.05);color:#fff;cursor:pointer;
-}
-.rngHbdQuestion{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.09)}
-.rngHbdQuestion textarea{min-height:90px;resize:vertical}
-.rngHbdHidden{display:none!important}
-.rngHbdCenter{text-align:center}
-.rngHbdMuted{opacity:.68;font-size:12px;line-height:1.55}
-.rngHbdStatus{margin:10px 0;padding:11px 13px;border-radius:13px;background:rgba(255,255,255,.05);font-size:12px}
 .rngFeatureDisabled{display:none!important}
 </style>
 
@@ -9192,385 +9125,110 @@ if(
 
 <script id="rng-hbd-engine">
 /* =========================================================
-   RNG SF — HBD ENGINE
+   RNG SF — HBD LAUNCHER
+   ---------------------------------------------------------
+   HBD sekarang punya halaman sendiri di hbd/index.html.
+   Index utama hanya menjadi pintu masuk + countdown.
    ========================================================= */
-
-/*
- * FALSE = mode testing:
- *   tombol HBD tetap muncul walaupun belum masuk 24 jam.
- *
- * TRUE = mode produksi:
- *   tombol HBD hanya muncul mulai 24 jam sebelum ulang tahun.
- *
- * Kalau sudah selesai testing, cukup ubah FALSE -> TRUE.
- */
-const HBD_24H_ONLY = false; // kompatibilitas lama; kontrol aktif ada di config/control.js
-
-const HBD_WHATSAPP = window.RNG_CONTROL?.contact?.whatsapp || "6285745596459";
-
 (function(){
-    if(typeof ACCESS_DATA === "undefined") return;
+    const enabled = typeof window.rngFeatureEnabled === "function"
+        ? window.rngFeatureEnabled("hbd")
+        : true;
 
-    const people = [
-        ...(Array.isArray(ACCESS_DATA.special) ? ACCESS_DATA.special : []),
-        ...(Array.isArray(ACCESS_DATA.classmates) ? ACCESS_DATA.classmates : []),
-        ...(Array.isArray(ACCESS_DATA.superSpecial) ? ACCESS_DATA.superSpecial : [])
-    ].filter(p =>
-        p &&
-        p.enabled !== false &&
-        p.birthday &&
-        /^\d{8}$/.test(String(p.birthday)) &&
-        (!window.RNG_CONTROL || window.RNG_CONTROL.hbd?.enabled !== false)
-    );
+    const list = document.querySelector("#portalList");
+    if(!list || !enabled) return;
 
-    function maskedName(name){
-        name = String(name || "seseorang").trim();
-        if(name.length <= 2) return name[0] + "*";
-        if(name.length <= 4) return name[0] + "*".repeat(name.length-2) + name.at(-1);
-        return name.slice(0,2) + "*".repeat(Math.max(2,name.length-3)) + name.at(-1);
-    }
-
-    function dateParts(b){
-        return {
-            day:Number(b.slice(0,2)),
-            month:Number(b.slice(2,4)),
-            year:Number(b.slice(4,8))
-        };
-    }
-
-    function birthdayThisYear(p, year){
-        const d=dateParts(String(p.birthday));
-        return new Date(year,d.month-1,d.day,0,0,0,0);
-    }
-
-    function nextOccurrence(p, now){
-        let d=birthdayThisYear(p,now.getFullYear());
-        if(d < now) d=birthdayThisYear(p,now.getFullYear()+1);
-        return d;
-    }
-
-    function diffParts(ms){
-        ms=Math.max(0,ms);
-        const total=Math.floor(ms/1000);
-        const days=Math.floor(total/86400);
-        const hours=Math.floor((total%86400)/3600);
-        const minutes=Math.floor((total%3600)/60);
-        const seconds=total%60;
-        return {days,hours,minutes,seconds};
-    }
-
-    function nearest(now){
-        let best=null;
-        for(const p of people){
-            const d=nextOccurrence(p,now);
-            const delta=d-now;
-            if(!best || delta<best.delta) best={person:p,date:d,delta};
-        }
-        return best;
-    }
-
-    function inBirthdayWindow(p,now){
-        if(typeof window.rngHbdWindow === "function"){
-            return window.rngHbdWindow(p,now);
-        }
-        const thisYear=birthdayThisYear(p,now.getFullYear());
-        const start=new Date(thisYear.getTime()-86400000);
-        return now>=start && now<=thisYear;
-    }
-
-    function scheduleAllows(now){
-        if(window.RNG_CONTROL?.hbd?.enabled === false) return false;
-        if(typeof window.rngHbdScheduleEnabled === "function" && window.rngHbdScheduleEnabled()) return true;
-        return true;
-    }
-
-    function validCode(person, code){
-        return String(code||"").replace(/\D/g,"") === String(person.birthday);
-    }
-
-    function hbdMessage(person){
-        if(typeof HBD_MESSAGE_DATA !== "undefined"){
-            const key=person.hbdMessageNo;
-            if(key && HBD_MESSAGE_DATA[key]) return HBD_MESSAGE_DATA[key];
-            if(HBD_MESSAGE_DATA.default) return HBD_MESSAGE_DATA.default;
-        }
-        return `Selamat ulang tahun yaa, ${person.nickname || person.fullName || "kamu"}. 🎂🤍\n\nSemoga umur yang baru membawa banyak kesehatan, kebahagiaan, dan hal-hal baik.`;
-    }
-
-    function fmtDate(d){
-        return d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
-    }
-
-    const list=document.querySelector("#portalList");
-    if(!list) return;
+    const data = Array.isArray(window.HBD_DATA) ? window.HBD_DATA : [];
+    const valid = data.filter(p => p && p.enabled !== false && /^\d{8}$/.test(String(p.ulta || p.birthday || "")));
+    if(!valid.length) return;
 
     const wrap=document.createElement("div");
     wrap.className="hbdPortalWrap";
     wrap.id="rngHbdPortal";
-    wrap.classList.add("rngHbdHidden");
     list.appendChild(wrap);
 
     const btn=document.createElement("button");
     btn.className="hbdPortalButton";
     btn.type="button";
-    btn.innerHTML=`
-        <div class="hbdTitle">🎂 <span id="rngHbdTitle">Ucapan ulang tahun</span></div>
-        <div class="hbdCountdown" id="rngHbdCountdown"></div>
-        <div class="hbdWarning">00:00 (waktu) · siapapun tolong jangan pencet ini kalau bukan yang bersangkutan. 🤍</div>
-    `;
     wrap.appendChild(btn);
 
-    const modal=document.createElement("div");
-    modal.className="rngHbdModal";
-    modal.innerHTML=`
-      <div class="rngHbdCard">
-        <div id="rngHbdContent"></div>
-      </div>`;
-    document.body.appendChild(modal);
-    const content=modal.querySelector("#rngHbdContent");
-
-    let selected=null;
-
-    function showModal(html){
-        content.innerHTML=html;
-        modal.classList.add("show");
+    function codeOf(p){ return String(p.ulta || p.birthday); }
+    function birthdayThisYear(p,year){
+        const c=codeOf(p);
+        return new Date(year,Number(c.slice(2,4))-1,Number(c.slice(0,2)),0,0,0,0);
     }
-
-    function closeModal(){
-        modal.classList.remove("show");
-        content.innerHTML="";
+    function windowOf(p,now){
+        const birthday=birthdayThisYear(p,now.getFullYear());
+        const start=new Date(birthday.getTime() - Number(window.RNG_CONTROL?.hbd?.startHoursBeforeBirthday || 0)*3600000);
+        const end=new Date(birthday.getTime() + Number(window.RNG_CONTROL?.hbd?.endHoursAfterBirthday || 0)*3600000);
+        return {birthday,start,end};
     }
-
-    function openFor(person){
-        selected=person;
-        const d=dateParts(person.birthday);
-        showModal(`
-          <div class="rngHbdCenter">
-            <div style="font-size:30px">🎁</div>
-            <h2>Ucapan ulang tahun</h2>
-            <p class="rngHbdMuted">Untuk ${maskedName(person.nickname || person.fullName)}</p>
-          </div>
-          <div class="rngHbdStatus">
-            Tanggal ulang tahun: <b>${String(d.day).padStart(2,"0")}-${String(d.month).padStart(2,"0")}-${d.year}</b>
-          </div>
-          <p>Kalau kamu memang orang yang bersangkutan, masukkan kode ulang tahunmu untuk membuka hadiahnya.</p>
-          <input class="rngHbdInput" id="rngHbdCode" inputmode="numeric" maxlength="8" placeholder="Kode ulang tahun · DDMMYYYY">
-          <button class="rngHbdAction" id="rngHbdVerify">VERIFIKASI & BUKA 🎁</button>
-          <button class="rngHbdSecondary" id="rngHbdClose">Tutup</button>
-          <div id="rngHbdError" class="rngHbdMuted" style="margin-top:10px"></div>
-        `);
-        content.querySelector("#rngHbdClose").onclick=closeModal;
-        content.querySelector("#rngHbdVerify").onclick=()=>{
-            const code=content.querySelector("#rngHbdCode").value;
-            const err=content.querySelector("#rngHbdError");
-            if(!validCode(person,code)){
-                err.textContent="Kode ulang tahunnya belum benar. Kalau kamu bukan orangnya, sebaiknya berhenti sampai di sini. 🤍";
-                return;
-            }
-            showBirthday(person);
+    function scheduleEnabled(){
+        return typeof window.rngHbdScheduleEnabled === "function"
+            ? window.rngHbdScheduleEnabled()
+            : false;
+    }
+    function allowed(p,now){
+        if(!scheduleEnabled()) return true;
+        const w=windowOf(p,now);
+        return now>=w.start && now<=w.end;
+    }
+    function nextBirthday(p,now){
+        let d=birthdayThisYear(p,now.getFullYear());
+        if(d < now) d=birthdayThisYear(p,now.getFullYear()+1);
+        return d;
+    }
+    function diff(ms){
+        const total=Math.max(0,Math.floor(ms/1000));
+        return {
+            days:Math.floor(total/86400),
+            hours:Math.floor((total%86400)/3600),
+            minutes:Math.floor((total%3600)/60),
+            seconds:total%60
         };
     }
-
-    function showBirthday(person){
-        const msg=hbdMessage(person);
-        showModal(`
-          <div class="rngHbdCenter">
-            <div style="font-size:34px">💌</div>
-            <h2>Untuk ${person.nickname || person.fullName}</h2>
-            <p class="rngHbdMuted">Selamat ulang tahun. 🎂</p>
-          </div>
-          <div class="rngHbdEnvelope" id="rngHbdEnvelope">
-             <div class="rngHbdFlap"></div>
-             <div class="rngHbdLetter">${msg.split("\n\n").map(x=>`<p>${x.replace(/\n/g,"<br>")}</p>`).join("")}</div>
-             <div class="rngHbdSeal" id="rngHbdSeal">💗</div>
-          </div>
-          <p class="rngHbdCenter rngHbdMuted">Tekan segel untuk membuka surat.</p>
-          <div id="rngHbdAfterOpen" class="rngHbdHidden">
-            <div class="rngHbdQuestion">
-              <b>Kalau boleh jujur, apa yang pertama kali kamu pikirkan setelah selesai membaca?</b>
-              <textarea class="rngHbdInput" id="hbdAnswer" placeholder="Tulis jawabanmu..."></textarea>
-            </div>
-            <div id="rngHbdResponseButtons">
-                <button class="rngHbdAction" id="hbdWa">Kirim jawaban lewat WhatsApp 💬</button>
-                <button class="rngHbdSecondary" id="hbdEmail">Kirim lewat Email ✉️</button>
-                <button class="rngHbdSecondary" id="hbdTikTok">Salin untuk TikTok 🎵</button>
-                <button class="rngHbdSecondary" id="hbdCopy">Salin Pesan 📋</button>
-            </div>
-            <button class="rngHbdSecondary" id="rngHbdDone">Selesai</button>
-          </div>
-        `);
-
-        content.querySelector("#rngHbdSeal").onclick=()=>{
-            const env=content.querySelector("#rngHbdEnvelope");
-            env.classList.add("open");
-            content.querySelector("#rngHbdAfterOpen").classList.remove("rngHbdHidden");
-        };
-
-        function buildResponseText(){
-            const answer=content.querySelector("#hbdAnswer").value.trim() || "(tidak diisi)";
-            const name=person.nickname || person.fullName || "kamu";
-            return `Halo! Aku sudah selesai membuka surat ulang tahunnya. 🤍
-
-Nama: ${name}
-Ulang tahun: ${fmtDate(birthdayThisYear(person,new Date().getFullYear()))}
-
-Jawabanku:
-
-1. Apa yang pertama kali aku pikirkan setelah selesai membaca:
-   ${answer}
-
-Aku sudah benar-benar sampai di akhir dan sudah membaca semuanya. Makasih ya.`;
-        }
-
-        async function copyResponse(text){
-            try{
-                if(navigator.clipboard?.writeText){
-                    await navigator.clipboard.writeText(text);
-                    return true;
-                }
-            }catch(e){}
-
-            const temp=document.createElement("textarea");
-            temp.value=text;
-            temp.style.position="fixed";
-            temp.style.opacity="0";
-            document.body.appendChild(temp);
-            temp.focus();
-            temp.select();
-            let ok=false;
-            try{ ok=document.execCommand("copy"); }catch(e){}
-            temp.remove();
-            return ok;
-        }
-
-        function methodEnabled(name){
-            return window.RNG_CONTROL?.hbd?.responseMethods?.[name] !== false;
-        }
-
-        const responseButtons=content.querySelector("#rngHbdResponseButtons");
-        if(!window.RNG_CONTROL?.hbd?.response || window.RNG_CONTROL?.hbd?.enabled === false){
-            responseButtons?.classList.add("rngFeatureDisabled");
-        }else{
-            [
-                ["hbdWa","whatsapp"],
-                ["hbdEmail","email"],
-                ["hbdTikTok","tiktok"],
-                ["hbdCopy","copy"]
-            ].forEach(([id,key])=>{
-                const el=content.querySelector("#"+id);
-                if(el && !methodEnabled(key)) el.classList.add("rngFeatureDisabled");
-            });
-        }
-
-        content.querySelector("#hbdWa").onclick=()=>{
-            const text=buildResponseText();
-            const number=window.RNG_CONTROL?.contact?.whatsapp || HBD_WHATSAPP;
-            if(!number) return;
-            window.open("https://wa.me/"+number+"?text="+encodeURIComponent(text),"_blank");
-        };
-
-        content.querySelector("#hbdEmail").onclick=()=>{
-            const text=buildResponseText();
-            const email=String(window.RNG_CONTROL?.contact?.email || "").trim();
-            const subject="Pesan setelah membaca HBD";
-            const target=email ? email : "";
-            window.location.href=`mailto:${target}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
-        };
-
-        content.querySelector("#hbdTikTok").onclick=async()=>{
-            const text=buildResponseText();
-            const copied=await copyResponse(text);
-            const url=String(window.RNG_CONTROL?.contact?.tiktok || "https://www.tiktok.com/").trim();
-            const button=content.querySelector("#hbdTikTok");
-            if(button) button.textContent=copied ? "Pesan tersalin ✓ Buka TikTok" : "Salin gagal — coba lagi";
-            if(copied && url) window.open(url,"_blank");
-        };
-
-        content.querySelector("#hbdCopy").onclick=async()=>{
-            const copied=await copyResponse(buildResponseText());
-            const button=content.querySelector("#hbdCopy");
-            if(button) button.textContent=copied ? "Pesan tersalin ✓" : "Gagal menyalin — coba lagi";
-        };
-
-        content.querySelector("#rngHbdDone").onclick=closeModal;
+    function masked(name){
+        name=String(name||"seseorang");
+        if(name.length<=2) return name[0]+"*";
+        if(name.length<=4) return name[0]+"*".repeat(name.length-2)+name.at(-1);
+        return name.slice(0,2)+"*".repeat(Math.max(2,name.length-3))+name.at(-1);
     }
 
     btn.onclick=()=>{
         const now=new Date();
-        const useSchedule = typeof window.rngHbdScheduleEnabled === "function"
-            ? window.rngHbdScheduleEnabled()
-            : HBD_24H_ONLY;
-        const candidates=people.filter(p=>!useSchedule || inBirthdayWindow(p,now));
+        const candidates=valid.filter(p=>allowed(p,now));
         if(!candidates.length) return;
-
-        const active=candidates.filter(p=>inBirthdayWindow(p,now));
-        if(active.length===1){
-            openFor(active[0]);
-            return;
-        }
-
-        if(active.length>1){
-            showModal(`
-              <h2 class="rngHbdCenter">Pilih ucapan</h2>
-              <p class="rngHbdMuted rngHbdCenter">Ada lebih dari satu ulang tahun yang sedang masuk waktunya.</p>
-              ${active.map((p,i)=>`
-                <button class="rngHbdSecondary" data-hbd-index="${i}">
-                  🎂 Ucapan untuk ${maskedName(p.nickname || p.fullName)}
-                </button>`).join("")}
-              <button class="rngHbdSecondary" id="rngHbdClose">Tutup</button>
-            `);
-            content.querySelectorAll("[data-hbd-index]").forEach(x=>{
-                x.onclick=()=>openFor(active[Number(x.dataset.hbdIndex)]);
-            });
-            content.querySelector("#rngHbdClose").onclick=closeModal;
-            return;
-        }
-
-        /* Testing mode: allow choosing nearest person even outside 24h. */
-        openFor(nearest(now).person);
+        // Untuk sekarang setiap entry HBD membuka halaman HBD sendiri.
+        const target=candidates[0];
+        const id=encodeURIComponent(String(target.id || ""));
+        window.location.href=`hbd/index.html?id=${id}`;
     };
 
     function refresh(){
         const now=new Date();
-        const useSchedule = typeof window.rngHbdScheduleEnabled === "function"
-            ? window.rngHbdScheduleEnabled()
-            : HBD_24H_ONLY;
-        const eligible=people.filter(p=>!useSchedule || inBirthdayWindow(p,now));
-
-        if(!eligible.length){
-            wrap.classList.add("rngHbdHidden");
-            return;
-        }
+        const target=valid.find(p=>allowed(p,now)) || valid[0];
+        const active=valid.filter(p=>allowed(p,now));
+        const name=target.nama || target.nickname || target.fullName || "seseorang";
 
         wrap.classList.remove("rngHbdHidden");
+        btn.disabled=!active.length;
+        btn.innerHTML=`
+            <div class="hbdTitle">🎂 Ucapan ulang tahun untuk ${masked(name)}</div>
+            <div class="hbdCountdown">${active.length ? "✦ Surat HBD tersedia — buka halaman khusus" : "Belum masuk waktu surat"}</div>
+            <div class="hbdWarning">Halaman HBD dipisahkan dari index utama dan akan mengikat sesi ke orang yang berhasil login.</div>
+        `;
 
-        const active=people.filter(p=>inBirthdayWindow(p,now));
-        let target=active[0] || nearest(now).person;
-        const occ=active[0] ? birthdayThisYear(target,now.getFullYear()) : nextOccurrence(target,now);
-        const delta=occ-now;
-        const x=diffParts(delta);
-
-        btn.querySelector("#rngHbdTitle").textContent=
-            `Ucapan ulang tahun untuk ${maskedName(target.nickname || target.fullName)}`;
-
-        if(active.length){
-            btn.querySelector("#rngHbdCountdown").textContent=
-                delta<=0 ? "🎉 Sekarang waktunya — buka kalau kamu orangnya." :
-                `Menuju 00:00 · ${x.hours}j ${x.minutes}m ${x.seconds}d`;
-        }else{
-            btn.querySelector("#rngHbdCountdown").textContent=
-                `Mode testing · ${x.days}h ${x.hours}j ${x.minutes}m ${x.seconds}d`;
+        if(!active.length && scheduleEnabled()){
+            const next=nextBirthday(target,now);
+            const x=diff(next-now);
+            btn.querySelector(".hbdCountdown").textContent=
+                `Menuju waktu berikutnya · ${x.days}h ${String(x.hours).padStart(2,"0")}j ${String(x.minutes).padStart(2,"0")}m`;
         }
     }
 
-    window.RNG_HBD={
-        open:()=>btn.click(),
-        refresh,
-        set24HOnly:(value)=>window.location.reload()
-    };
-
     refresh();
     setInterval(refresh,1000);
+    window.RNG_HBD={open:()=>btn.click(),refresh};
 })();
 </script>
 
