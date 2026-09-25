@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="style.css">
 <script src="../config/control.js"></script>
 <script src="../config/birthday.js"></script>
+<script src="../config/passwords.js"></script>
 <script src="config.js"></script>
 </head>
 <body>
@@ -51,8 +52,14 @@
             <div class="mini-icon">🔐</div>
             <div class="eyebrow">PINTU PRIBADI</div>
             <h2>Ini buat kamu, kan?</h2>
-            <p>Masukkan kode pribadi 8 angka untuk memastikan surat ini memang untukmu.</p>
-            <input id="birthdayCode" inputmode="numeric" maxlength="8" placeholder="Kode pribadi" autocomplete="off">
+            <p>Masukkan tanggal lahirmu untuk memastikan surat ini memang untukmu.</p>
+            <div class="date-code" aria-label="Tanggal lahir">
+                <input id="birthDay" inputmode="numeric" maxlength="2" placeholder="DD" aria-label="Tanggal">
+                <span>/</span>
+                <input id="birthMonth" inputmode="numeric" maxlength="2" placeholder="MM" aria-label="Bulan">
+                <span>/</span>
+                <input id="birthYear" inputmode="numeric" maxlength="4" placeholder="YYYY" aria-label="Tahun">
+            </div>
             <button class="main-btn" id="verifyBtn">Buka surat</button>
             <div class="error" id="codeError"></div>
         </div>

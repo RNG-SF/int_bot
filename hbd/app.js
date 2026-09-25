@@ -67,21 +67,29 @@ if(savedSession && requestedId && savedSession.id !== requestedId){
 }
 
 const activeId = savedSession?.id || requestedId;
-const person = getPerson(activeId);
+let person = getPerson(activeId);
+let birthday = person ? birthdayCode(person) : "";
+let targetName = person ? targetNameOf(person) : "kamu";
+let message = person
+    ? String(
+        person?.pesanHBD ||
+        window.HBD_MESSAGE_DATA?.[person?.hbdMessageNo || person?.id] ||
+        window.HBD_MESSAGE_DATA?.default ||
+        "Selamat ulang tahun, {name}. 🤍"
+      ).replaceAll("{name}", targetName)
+    : "";
 
-if(!person){
-    renderLocked(savedSession, "Halaman HBD ini harus dibuka dari pintu HBD yang benar.");
-    return;
+function setActivePerson(nextPerson){
+    person = nextPerson;
+    birthday = birthdayCode(person);
+    targetName = targetNameOf(person);
+    message = String(
+        person?.pesanHBD ||
+        window.HBD_MESSAGE_DATA?.[person?.hbdMessageNo || person?.id] ||
+        window.HBD_MESSAGE_DATA?.default ||
+        "Selamat ulang tahun, {name}. 🤍"
+    ).replaceAll("{name}", targetName);
 }
-
-const birthday = birthdayCode(person);
-const targetName = targetNameOf(person);
-const message = String(
-    person?.pesanHBD ||
-    window.HBD_MESSAGE_DATA?.[person?.hbdMessageNo || person?.id] ||
-    window.HBD_MESSAGE_DATA?.default ||
-    "Selamat ulang tahun, {name}. 🤍"
-).replaceAll("{name}", targetName);
 
 function pad(n){ return String(n).padStart(2,"0"); }
 function dateParts(code){
@@ -183,20 +191,26 @@ if(CONTROL.global?.debug === true){
 }
 
 const now=new Date();
-const windowState=activeWindow(person,now);
+const windowState=person ? activeWindow(person,now) : null;
 
-if(!allowedNow(person)){
+if(person && !allowedNow(person)){
     qs("#lockTitle").textContent="Suratnya belum waktunya. 🤍";
     qs("#lockText").textContent="Halaman ini sudah benar, tapi surat belum berada dalam waktu yang ditentukan.";
     qs("#openBtn").disabled=true;
     qs("#openBtn").textContent="Belum waktunya";
     qs("#countdown").textContent=fmtCountdown(nextWindow(person,now).start-now);
-}else{
+}else if(person){
     qs("#lockTitle").textContent="Suratnya sudah siap. ✦";
     qs("#lockText").textContent="Kalau kamu memang orang yang dituju, lanjutkan pelan-pelan ya.";
     qs("#openBtn").disabled=false;
     qs("#openBtn").textContent=savedSession ? "Lanjut ke surat 🤍" : "Buka suratnya 🤍";
     qs("#countdown").textContent="✦ Waktu surat sedang aktif";
+}else{
+    qs("#lockTitle").textContent="Satu surat kecil.";
+    qs("#lockText").textContent="Masukkan tanggal lahirmu untuk membuka surat yang memang dibuat untukmu.";
+    qs("#openBtn").disabled=false;
+    qs("#openBtn").textContent="Masukkan tanggal 🤍";
+    qs("#countdown").textContent="✦ Pintu pribadi";
 }
 
 function liveClock(){
@@ -209,6 +223,10 @@ function liveClock(){
         return;
     }
 
+    if(!person){
+        qs("#countdown").textContent="✦ Masukkan tanggal lahir";
+        return;
+    }
     const active=activeWindow(person,d);
     if(active){
         qs("#countdown").textContent="✦ Waktu surat sedang aktif";
@@ -232,29 +250,72 @@ const starStyle=document.createElement("style");
 starStyle.textContent="@keyframes twinkle{50%{opacity:.05;transform:scale(.6)}}";
 document.head.appendChild(starStyle);
 
+function findPersonByBirthday(code){
+    return birthdayPeople.find(p => birthdayCode(p) === code) || null;
+}
+
+function readBirthdayInputs(){
+    const day = qs("#birthDay")?.value.replace(/\D/g, "") || "";
+    const month = qs("#birthMonth")?.value.replace(/\D/g, "") || "";
+    const year = qs("#birthYear")?.value.replace(/\D/g, "") || "";
+    return { day, month, year, code: day + month + year };
+}
+
+function focusNextDateInput(current){
+    const ids = ["birthDay", "birthMonth", "birthYear"];
+    const index = ids.indexOf(current.id);
+    if(index >= 0 && current.value.length >= current.maxLength){
+        qs("#" + ids[index + 1])?.focus();
+    }
+}
+
+function resetDateInputs(){
+    ["#birthDay","#birthMonth","#birthYear"].forEach(sel => {
+        const el = qs(sel);
+        if(el) el.value = "";
+    });
+}
+
+["#birthDay","#birthMonth","#birthYear"].forEach(sel => {
+    qs(sel)?.addEventListener("input", e => {
+        e.target.value = e.target.value.replace(/\D/g, "").slice(0, Number(e.target.maxLength));
+        focusNextDateInput(e.target);
+    });
+});
+
 /* =========================
    OPEN / VERIFY
    ========================= */
 qs("#openBtn").onclick=()=>{
-    if(!allowedNow(person)) return;
+    if(person && !allowedNow(person)) return;
     qs("#screen-lock .envelope").classList.add("open");
     setTimeout(()=>go("screen-code"),500);
 };
 
-qs("#birthdayCode").addEventListener("input",e=>{
-    e.target.value=e.target.value.replace(/\D/g,"").slice(0,8);
-});
-
 qs("#verifyBtn").onclick=()=>{
-    const value=qs("#birthdayCode").value;
+    const {day, month, year, code} = readBirthdayInputs();
     const error=qs("#codeError");
 
-    if(!validDateCode(value)){
-        error.textContent="Kode belum lengkap. Masukkan 8 angka kode pribadi.";
+    if(day.length !== 2 || month.length !== 2 || year.length !== 4){
+        error.textContent="Lengkapi tanggal, bulan, dan tahun dulu ya. 😭";
         return;
     }
-    if(value!==birthday){
-        error.textContent="Hmm... kayaknya kode ini bukan kode yang benar. 😭";
+
+    if(!validDateCode(code)){
+        error.textContent="Format tanggalnya nggak valid. Coba cek lagi ya.";
+        return;
+    }
+
+    const matched = findPersonByBirthday(code);
+    if(!matched){
+        error.textContent="Tanggal ini belum terdaftar untuk surat HBD.";
+        return;
+    }
+
+    setActivePerson(matched);
+
+    if(!allowedNow(person)){
+        error.textContent="Suratnya belum masuk waktunya. 🤍";
         return;
     }
 

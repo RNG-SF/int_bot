@@ -108,11 +108,7 @@ const HBD_24H_ONLY = false; // testing; set true for production 24h window // FA
         `;
 
         wrap.querySelector("button").onclick = () => {
-            const params = new URLSearchParams({
-                birthday: String(target.birthday),
-                id: String(target.id || "")
-            });
-            window.location.href = `${HBD_PATH}?${params.toString()}`;
+            window.location.href = HBD_PATH;
         };
     };
 
